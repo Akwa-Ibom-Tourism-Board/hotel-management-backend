@@ -1,0 +1,73 @@
+{
+  "name": "hotel-management-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile:watch": "tsc -w",
+    "compile": "tsc",
+    "test": "cross-env NODE_ENV=development --max-old-space-size=4096 jest -i --colors --verbose --detectOpenHandles --coverage --forceExit --testTimeout=500000 __tests__",
+    "test:watch": "cross-env NODE_ENV=development jest --watch",
+    "dev": "cross-env NODE_ENV=development nodemon --exec",
+    "prod": "cross-env NODE_ENV=production node dist/app.js",
+    "start": "node dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akwa-Ibom-Tourism-Board/hotel-management-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Akwa-Ibom-Tourism-Board/hotel-management-backend/issues"
+  },
+  "homepage": "https://github.com/Akwa-Ibom-Tourism-Board/hotel-management-backend#readme",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
+    "bull": "^4.16.5",
+    "cloudinary": "^1.41.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "cron": "^4.3.3",
+    "cross-env": "^10.1.0",
+    "dayjs": "^1.11.18",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.37.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "joi": "^18.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "lodash.merge": "^4.6.2",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "multer-storage-cloudinary": "^4.0.0",
+    "nanoid": "^5.1.6",
+    "nodemailer": "^7.0.9",
+    "nodemon": "^3.1.10",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "uuid": "^13.0.0",
+    "validator": "^13.15.15",
+    "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/body-parser": "^1.19.6",
+    "@types/compression": "^1.8.1",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/morgan": "^1.9.10",
+    "@types/multer": "^2.0.0",
+    "@types/nodemailer": "^7.0.2",
+    "@types/pg": "^8.15.5",
+    "@types/validator": "^13.15.3"
+  }
+}
