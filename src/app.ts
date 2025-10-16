@@ -1,5 +1,3 @@
-errorUtilities.processErrorHandler();
-
 import express, { NextFunction, Request, Response } from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -20,6 +18,9 @@ const app = express();
 const server = createServer(app);
 
 dotenv.config();
+
+
+errorUtilities.processErrorHandler();
 
 // Set security HTTP headers to disable 'powered by Express' header feature
 app.disable("x-powered-by");
