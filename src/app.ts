@@ -1,6 +1,4 @@
-// errorUtilities.processErrorHandler();
-
-console.log("🔄 Starting app.ts");
+errorUtilities.processErrorHandler();
 
 import express, { NextFunction, Request, Response } from "express";
 import helmet from "helmet";

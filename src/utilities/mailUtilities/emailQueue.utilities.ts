@@ -1,7 +1,8 @@
 import Queue from "bull";
 import { mailUtilities } from "..";
+import config from "../../configurations/config";
 
-const emailQueue = new Queue("email queue", "redis://127.0.0.1:6379");
+const emailQueue = new Queue("email queue", config?.REDIS_URL!);
 
 export const addEmailToQueue = async (emailData: {
   to: string;
@@ -10,13 +11,16 @@ export const addEmailToQueue = async (emailData: {
   actionLink?: string;
   actionText?: string;
 }) => {
-  return emailQueue.add("sendEmail", emailData, {
+  emailQueue.add("sendEmail", emailData, {
     attempts: 3,
     backoff: {
       type: "exponential",
       delay: 1000,
     },
+  }).catch(error => {
+    console.error("Failed to add email to queue:", error);
   });
+  return;
 };
 
 emailQueue.process("sendEmail", async (job) => {
