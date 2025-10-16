@@ -58,7 +58,7 @@ const addEstablishment = errorUtilities.withServiceErrorHandling(
     return handleServicesResponse.handleServicesResponse(
       StatusCodes.CREATED,
       EstablishmentServiceResponses.SUCCESSFUL_REGISTRATION,
-      { establishment: newEstablishment }
+      // { establishment: newEstablishment }
     );
   }
 );
