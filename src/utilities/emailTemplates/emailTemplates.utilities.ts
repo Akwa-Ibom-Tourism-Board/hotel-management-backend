@@ -43,7 +43,7 @@ export const getEmailTemplate = (
             <tr>
               <td
                 align="center"
-                bgcolor="#00563b"
+                bgcolor="#e77818"
                 style="padding: 30px; color: #ffffff"
               >
                 <h1 style="margin: 0; font-size: 20px">
@@ -52,7 +52,7 @@ export const getEmailTemplate = (
                       padding: 10px;
                       margin-right: 10px;
                       border-radius: 20px;
-                      background-color: #4a9e5c;
+                      background-color: rgba(248, 172, 106, 1);
                     "
                     >🏢</span
                   >
@@ -132,7 +132,7 @@ export const getEmailTemplate = (
                   style="
                     font-size: 18px;
                     font-weight: bold;
-                    color: #e77818;
+                    color: #00563b;
                     margin: 8px 0 0 0;
                   "
                 >
@@ -145,7 +145,7 @@ export const getEmailTemplate = (
             <tr>
               <td
                 align="center"
-                bgcolor="#00563b"
+                bgcolor="#e77818"
                 style="padding: 30px; color: #ffffff"
               >
                 <h3 style="color: #ffffff; margin: 0 0 16px 0; font-size: 18px">

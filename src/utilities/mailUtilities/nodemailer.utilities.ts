@@ -25,6 +25,16 @@ const resend = new Resend(config.RESEND_API_KEY);
 //   },
 // });
 
+const transport = nodemailer.createTransport({
+  host: "smtp.sendgrid.net",
+  port: 2525, //587
+  secure: false,
+  auth: {
+    user: "apikey",
+    pass: process.env.SENDGRID_API_KEY!,
+  },
+});
+
 const sendMail = async (
   to: string,
   message: string,
@@ -33,34 +43,37 @@ const sendMail = async (
   actionText?: string
 ) => {
   try {
-// const mailOptions = {
-    //   from: `Akwa Ibom State Hotels and Tourism Board <noreply@akwaibomtourism.com>`,
-    //   to,
-    //   subject,
-    //   html: getEmailTemplate(message, actionLink, actionText),
-    // };
-
-    // const response = await transport.sendMail(mailOptions);
-      const { data, error } = await resend.emails.send({
-      from: `Akwa Ibom State Hotels and Tourism Board <onboarding@resend.dev>`,
-      to: [to],
-      subject,
-      html: getEmailTemplate(message, actionLink, actionText),
-    });
-
-    if (error) {
-      console.error('Resend email error:', error);
-      throw new Error(`Failed to send email: ${error.message}`);
-    }
-
-    console.log('Email sent successfully via Resend:', {
+const mailOptions = {
+      from: `Akwa Ibom State Hotels and Tourism Board <akwaibomtourismboard.tech@gmail.com>`,
       to,
       subject,
-      emailId: data?.id,
-      status: data,
-    });
+      html: getEmailTemplate(message, actionLink, actionText),
+    };
+
+    const response = await transport.sendMail(mailOptions);
+    //   const { data, error } = await resend.emails.send({
+    //   from: `Akwa Ibom State Hotels and Tourism Board <onboarding@resend.dev>`,
+    //   to: [to],
+    //   subject,
+    //   html: getEmailTemplate(message, actionLink, actionText),
+    // });
+
+    // if (error) {
+    //   console.error('Resend email error:', error);
+    //   throw new Error(`Failed to send email: ${error.message}`);
+    // }
+
+    // console.log('Email sent successfully via Resend:', {
+    //   to,
+    //   subject,
+    //   emailId: data?.id,
+    //   status: data,
+    // });
     
-    return data;
+    // return data;
+    // return data;
+    // console.log("Email sent successfully:", { to, subject, response });
+    return response;
   } catch (err: any) {
     console.error("Error sending email:", err.message);
     throw new Error(err.message);
