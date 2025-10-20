@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/Akwa-Ibom-Tourism-Board/hotel-management-backend#readme",
   "dependencies": {
+    "@sendgrid/client": "^8.1.6",
+    "@sendgrid/mail": "^8.1.6",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "bull": "^4.16.5",
