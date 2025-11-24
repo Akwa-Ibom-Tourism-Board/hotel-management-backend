@@ -9,5 +9,16 @@ router.post(
   joiValidators.inputValidator(joiValidators.businessRegistrationSchema),
   establishmentController.entityRegistrationController
 );
+router.post(
+  "/send-registration-otp",
+  joiValidators.inputValidator(joiValidators.sendBusinessOtpSchema),
+  establishmentController.sendRegistrationOTPController
+);
+
+router.post(
+  "/verify-registration-otp",
+  joiValidators.inputValidator(joiValidators.verifyBusinessOtpSchema),
+  establishmentController.verifyRegistrationOTPController
+);
 
 export default router;

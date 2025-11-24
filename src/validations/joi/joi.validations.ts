@@ -323,6 +323,7 @@ const updateRegistrationStatusSchema = Joi.object({
   }),
 });
 
+
 export default {
   businessRegistrationSchema,
   sendBusinessOtpSchema,

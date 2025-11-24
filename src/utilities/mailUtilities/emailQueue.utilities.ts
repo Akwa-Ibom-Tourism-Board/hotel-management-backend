@@ -11,15 +11,19 @@ export const addEmailToQueue = async (emailData: {
   actionLink?: string;
   actionText?: string;
 }) => {
-  emailQueue.add("sendEmail", emailData, {
-    attempts: 3,
-    backoff: {
-      type: "exponential",
-      delay: 1000,
-    },
-  }).catch(error => {
-    console.error("Failed to add email to queue:", error);
-  });
+  emailQueue
+    .add("sendEmail", emailData, {
+      attempts: 3,
+      backoff: {
+        type: "exponential",
+        delay: 1000,
+      },
+      removeOnComplete: true,
+      removeOnFail: true,
+    })
+    .catch((error) => {
+      console.error("Failed to add email to queue:", error);
+    });
   return;
 };
 
@@ -37,5 +41,5 @@ emailQueue.on("failed", (job, err) => {
 });
 
 export default {
-    addEmailToQueue,
-}
+  addEmailToQueue,
+};

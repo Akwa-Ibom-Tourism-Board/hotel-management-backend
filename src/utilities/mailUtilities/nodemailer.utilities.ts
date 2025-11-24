@@ -44,7 +44,7 @@ const sendMail = async (
 ) => {
   try {
 const mailOptions = {
-      from: `Akwa Ibom State Hotels and Tourism Board <akwaibomtourismboard.tech@gmail.com>`,
+      from: `Akwa Ibom State Hotels and Tourism Board <no-reply@ibomtourismboard.site>`,
       to,
       subject,
       html: getEmailTemplate(message, actionLink, actionText),

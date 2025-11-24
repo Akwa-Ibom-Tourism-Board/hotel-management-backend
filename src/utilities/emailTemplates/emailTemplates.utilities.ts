@@ -56,7 +56,7 @@ export const getEmailTemplate = (
                     "
                     >🏢</span
                   >
-                  Akwa Ibom State Hotel and Tourism Board
+                  Akwa Ibom State Hotels and Tourism Board
                 </h1>
               </td>
             </tr>
@@ -67,7 +67,7 @@ export const getEmailTemplate = (
                 <h2
                   style="font-size: 24px; font-weight: bold; margin: 0 0 16px 0"
                 >
-                  Welcome to the Akwa Ibom State Hotel and Tourism Board!
+                  Welcome to the Akwa Ibom State Hotels and Tourism Board!
                 </h2>
               </td>
             </tr>
@@ -136,7 +136,7 @@ export const getEmailTemplate = (
                     margin: 8px 0 0 0;
                   "
                 >
-                  The Akwa Ibom State Hotel and Tourism Board Team
+                  The Akwa Ibom State Hotels and Tourism Board Team
                 </p>
               </td>
             </tr>
@@ -165,12 +165,13 @@ export const getEmailTemplate = (
                         padding: 8px 0;
                         text-align: center;
                         font-size: 14px;
+                         color: #ffffff;
                       "
                     >
                       📍 <a
                         href="https://www.google.com/maps/search/?api=1&query=Plot+57,+H-Line,+Ewet+Housing,+Uyo,+Akwa+Ibom+State,+Nigeria"
                         target="_blank"
-                        style="text-decoration: none"
+                        style="color: #ffffff; text-decoration: underline;"
                       >
                         Plot 57, H-Line, Ewet Housing, Uyo, Akwa Ibom State,
                         Nigeria
@@ -183,9 +184,10 @@ export const getEmailTemplate = (
                         padding: 8px 0;
                         text-align: center;
                         font-size: 14px;
+                         color: #ffffff;
                       "
                     >
-                      📞  <a href="tel:+2341234567890" style="text-decoration: none;">
+                      📞  <a href="tel:+2341234567890" style="color: #ffffff; text-decoration: underline;">
     +234 123 456 7890
   </a>
                     </td>
@@ -196,10 +198,11 @@ export const getEmailTemplate = (
                         padding: 8px 0;
                         text-align: center;
                         font-size: 14px;
+                        color: #ffffff;
                       "
                     >
                       ✉️
-                       <a href="mailto:info@akwaibomtourism.com" style="text-decoration: none;">
+                       <a href="mailto:info@akwaibomtourism.com" style="color: #ffffff; text-decoration: underline;">
     info@akwaibomtourism.com
   </a>
                     </td>
@@ -221,8 +224,8 @@ export const getEmailTemplate = (
                         style="
                           margin: 0 10px;
                           color: #ffffff;
-                          text-decoration: none;
                           font-size: 14px;
+                          text-decoration: underline;
                         "
                         >Facebook</a
                       >
@@ -231,8 +234,8 @@ export const getEmailTemplate = (
                         style="
                           margin: 0 10px;
                           color: #ffffff;
-                          text-decoration: none;
                           font-size: 14px;
+                          text-decoration: underline;
                         "
                         >Twitter</a
                       >
@@ -241,8 +244,8 @@ export const getEmailTemplate = (
                         style="
                           margin: 0 10px;
                           color: #ffffff;
-                          text-decoration: none;
                           font-size: 14px;
+                          text-decoration: underline;
                         "
                         >Instagram</a
                       >
@@ -251,8 +254,8 @@ export const getEmailTemplate = (
                         style="
                           margin: 0 10px;
                           color: #ffffff;
-                          text-decoration: none;
                           font-size: 14px;
+                          text-decoration: underline;
                         "
                         >LinkedIn</a
                       >
@@ -261,7 +264,7 @@ export const getEmailTemplate = (
                 </table>
 
                 <p style="font-size: 12px; opacity: 0.7; margin-top: 20px; color: #ffffff;">
-                  &copy; ${new Date().getFullYear()} Akwa Ibom State Hotel and
+                  &copy; ${new Date().getFullYear()} Akwa Ibom State Hotels and
                   Tourism Board. All rights reserved.
                 </p>
               </td>
@@ -278,7 +281,7 @@ export const emailTemplates = {
   welcome: (userName: string, verificationLink?: string) =>
     getEmailTemplate(
       `Dear ${userName},<br><br>
-       Welcome to the Akwa Ibom State Hotel and Tourism Board Portal! We're excited to have you join our community of hospitality professionals.<br><br>
+       Welcome to the Akwa Ibom State Hotels and Tourism Board Portal! We're excited to have you join our community of hospitality professionals.<br><br>
        As part of our mandate to register and regulate all hospitality establishments in Akwa Ibom State, we're committed to supporting your business growth and compliance.`,
       verificationLink,
       "Verify Your Account"
@@ -287,7 +290,7 @@ export const emailTemplates = {
   registrationComplete: (businessName: string) =>
     getEmailTemplate(
       `Dear Proprietor,<br><br>
-       We're pleased to inform you that your registration for <strong>${businessName}</strong> has been successfully completed and received by the Akwa Ibom State Hotel and Tourism Board.<br><br>
+       We're pleased to inform you that your registration for <strong>${businessName}</strong> has been successfully completed and received by the Akwa Ibom State Hotels and Tourism Board.<br><br>
        Your application is now under review. You will be notified once the review process is complete.`,
       undefined,
       undefined
@@ -295,7 +298,7 @@ export const emailTemplates = {
 
   passwordReset: (resetLink: string) =>
     getEmailTemplate(
-      `We received a request to reset your password for the Akwa Ibom State Hotel and Tourism Board Portal.<br><br>
+      `We received a request to reset your password for the Akwa Ibom State Hotels and Tourism Board Portal.<br><br>
        Click the button below to create a new password. This link will expire in 1 hour for security reasons.`,
       resetLink,
       "Reset Password"

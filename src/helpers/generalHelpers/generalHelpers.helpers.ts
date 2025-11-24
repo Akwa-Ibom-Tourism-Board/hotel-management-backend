@@ -1,5 +1,6 @@
 import brcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { userRepositories } from "../../repositories";
 import { v1 as uuidv1 } from "uuid";
 import dayjs from "dayjs";
@@ -7,19 +8,49 @@ import dayjs from "dayjs";
 // import { errorUtilities } from '../../utilities';
 // import { QueryParameters } from '../../types/helpers.types';
 
+
+
 /**
- * Hash Password:
- * This function hashes a given password using bcrypt with a salt factor of 5.
- * @param {string} password - The password to be hashed.
- * @returns {Promise<string>} - The hashed password.
- * @throws {Error} - Throws an error if there is an issue with hashing the password.
+ * Generate a numeric OTP of a given length
+ * @param length number of digits (default: 6)
+ */
+function generateNumericOtp(length: number = 6): string {
+  const max = 10 ** length;
+  const otp = crypto.randomInt(0, max).toString();
+  return otp.padStart(length, "0");
+}
+
+/**
+ * Hash Data:
+ * This function hashes a given data using bcrypt with a salt factor of 5.
+ * @param {string} data - The data to be hashed.
+ * @returns {Promise<string>} - The hashed data.
+ * @throws {Error} - Throws an error if there is an issue with hashing the data.
  */
 
-// const hashPassword = async (password: string): Promise<string> => {
-//   const salt = await brcrypt.genSalt(5);
-//   const passwordHash = await brcrypt.hash(password, salt);
-//   return passwordHash;
-// };
+const hashData = async (data: string): Promise<string> => {
+  const salt = await brcrypt.genSalt(5);
+  const dataHash = await brcrypt.hash(data, salt);
+  return dataHash;
+};
+
+
+/**
+ * Generate a secure alphanumeric OTP
+ * @param length number of characters (default: 6)
+ */
+function generateAlphaNumericOtp(length: number = 6): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const bytes = crypto.randomBytes(length);
+  let otp = "";
+
+  for (let i = 0; i < length; i++) {
+    const byte = bytes.at(i) ?? 0;
+    otp += chars[byte % chars.length];
+  }
+
+  return otp;
+}
 
 /**
  * Validate Password:
@@ -73,25 +104,25 @@ const generateTokens = (
 //   }
 // };
 
-const dateFormatter = (dateString: Date) => {
-  const year = dateString.getFullYear();
-  const month = dateString.getMonth() + 1;
-  const day = dateString.getDate();
-  const hours = dateString.getHours();
-  const minutes = dateString.getMinutes();
-  const seconds = dateString.getSeconds();
-  const date = `${year}-${month.toString().padStart(2, "0")}-${day
-    .toString()
-    .padStart(2, "0")}`;
-  const time = `${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")}`;
+// const dateFormatter = (dateString: Date) => {
+//   const year = dateString.getFullYear();
+//   const month = dateString.getMonth() + 1;
+//   const day = dateString.getDate();
+//   const hours = dateString.getHours();
+//   const minutes = dateString.getMinutes();
+//   const seconds = dateString.getSeconds();
+//   const date = `${year}-${month.toString().padStart(2, "0")}-${day
+//     .toString()
+//     .padStart(2, "0")}`;
+//   const time = `${hours.toString().padStart(2, "0")}:${minutes
+//     .toString()
+//     .padStart(2, "0")}`;
 
-  return {
-    date,
-    time,
-  };
-};
+//   return {
+//     date,
+//     time,
+//   };
+// };
 
 // const refreshUserToken = async (
 //     userRefreshToken: string
@@ -138,74 +169,10 @@ const dateFormatter = (dateString: Date) => {
 //       }
 //   };
 
-const verifyOtp = async (otp: Record<string, any>) => {
-  if (new Date(otp.expiresAt) < new Date()) return false;
-  return true;
+const verifyOtp = async (inputedOtp: string, existingOtp:string) => {
+  return await brcrypt.compare(inputedOtp, existingOtp);
 };
 
-/**
- * Generates a unique transaction reference.
- * @returns {string} A unique transaction reference.
- */
-// const generateTransactionReference = (eventName: string): string => {
-//   const eventInitials = eventName
-//     .split(" ")
-//     .map((word: any) =>
-//       word[0].match(/[a-z,A-Z]/) ? word[0]?.toUpperCase() : word[0]
-//     )
-//     .join("");
-//   return `EVENTYZZE-TXN-${eventInitials}-${Date.now()}`;
-// };
-
-// const generateUniqueUserEventyzzeId = async (
-//   countryCode: string | any,
-//   stateCode: string,
-//   maxRetries: number = 5
-// ): Promise<string> => {
-//   let attempt = 0;
-
-//   while (attempt < maxRetries) {
-//     try {
-//       const eventyzzeId = `EVNTZ-${countryCode}-${stateCode}-${uuidv1()
-//         .substring(0, 6)
-//         .toUpperCase()}`;
-
-//       const existingUser = await userRepositories.userRepositories.getOne(
-//         { eventyzzeId },
-//         ["eventyzzeId"]
-//       );
-
-//       if (!existingUser) {
-//         return eventyzzeId;
-//       }
-
-//       attempt++;
-//     } catch (error) {
-//       attempt++;
-//     }
-//   }
-
-//   throw new Error(
-//     "Failed to generate unique EventyzzeId after maximum retries"
-//   );
-// };
-
-//FOR THE FUTURE
-// const generateUniqueUserEventyzzeId = async (
-//   countryCode: string,
-//   stateCode: string
-// ): Promise<string> => {
-//   // Get current timestamp in milliseconds
-//   const timestamp = Date.now().toString(36);
-
-//   // Get UUID v1 which includes timestamp + node identifier
-//   const uniqueSegment = uuidv1().substring(0, 6);
-
-//   // Combine with a random number for extra uniqueness
-//   const randomNum = Math.floor(Math.random() * 1000).toString(36);
-
-//   return `EVNTZ-${countryCode}-${stateCode}-${timestamp}${uniqueSegment}${randomNum}`;
-// };
 
 //This function is used to manage queries (request.query) for the application
 // export const queryFilter = async (queryItem: QueryParameters) => {
@@ -263,24 +230,15 @@ const verifyOtp = async (otp: Record<string, any>) => {
 //   return query;
 // };
 
-// Function to calculate endTime
-// const calculateEndTime = (
-//   startTime: string,
-//   duration: number,
-//   startDate: string
-// ) => {
-//   const start = dayjs(`${startDate}T${startTime}`);
-//   const end = start.add(duration, "minute");
-//   return end.format("HH:mm");
-// };
-
 export default {
-  // hashPassword,
+  generateNumericOtp,
+  generateAlphaNumericOtp,
+  hashData,
   // validatePassword,
   generateTokens,
   verifyOtp,
   // refreshUserToken,
-  dateFormatter,
+  // dateFormatter,
   // verifyRegistrationToken
   // generateTransactionReference,
   // generateUniqueUserEventyzzeId,
