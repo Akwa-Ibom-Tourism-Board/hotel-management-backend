@@ -3,6 +3,7 @@ import { establishmentServices } from "../../services";
 import { errorUtilities, responseUtilities } from "../../utilities";
 import { EstablishmentServiceResponses } from "../../types/responseTypes/establishmentServiceResponses";
 import { StatusCodes } from "../../constants";
+import QRCode from 'qrcode';
 
 const entityRegistrationController = errorUtilities.withControllerErrorHandling(
   async (request: Request, response: Response) => {
@@ -63,8 +64,31 @@ const verifyRegistrationOTPController =
     }
   );
 
+
+
+const downloadLinkAsQrCode = errorUtilities.withControllerErrorHandling(
+    async (request: Request, response: Response) => {
+  const url = request.body.url as string;
+
+  if (!url) {
+    return response.status(400).send("Missing URL");
+  }
+
+  try {
+    const qrBuffer = await QRCode.toBuffer(url, { type: 'png' });
+    response.setHeader('Content-Type', 'image/png');
+    response.setHeader('Content-Disposition', 'attachment; filename="qrcode.png"');
+
+    response.send(qrBuffer);
+  } catch (err) {
+    console.error(err);
+    response.status(500).send("Failed to generate QR code");
+  }
+});
+
 export default {
   entityRegistrationController,
   sendRegistrationOTPController,
   verifyRegistrationOTPController,
+  downloadLinkAsQrCode
 };

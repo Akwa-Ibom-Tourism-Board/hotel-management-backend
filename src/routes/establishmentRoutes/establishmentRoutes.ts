@@ -21,4 +21,9 @@ router.post(
   establishmentController.verifyRegistrationOTPController
 );
 
+router.post(
+  "/generate-url-barcode",
+  joiValidators.inputValidator(joiValidators.verifyBarCodeGeneratorSchema),
+  establishmentController.downloadLinkAsQrCode
+);
 export default router;

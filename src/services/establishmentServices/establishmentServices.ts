@@ -196,6 +196,8 @@ const verifyRegistrationOtp = errorUtilities.withServiceErrorHandling(
   }
 );
 
+
+
 export default {
   addEstablishment,
   sendRegistrationOtp,

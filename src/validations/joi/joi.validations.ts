@@ -135,10 +135,10 @@ const businessRegistrationSchema = Joi.object({
       "any.required": "Business phone number is required",
     }),
 
-  phoneVerified: Joi.boolean().required().messages({
-    "boolean.base": "Phone verification status is required",
-    "any.required": "Phone verification status is required",
-  }),
+  // phoneVerified: Joi.boolean().required().messages({
+  //   "boolean.base": "Phone verification status is required",
+  //   "any.required": "Phone verification status is required",
+  // }),
 
   address: Joi.string().trim().min(10).max(500).required().messages({
     "string.empty": "Full business address is required",
@@ -303,6 +303,12 @@ const verifyBusinessOtpSchema = Joi.object({
   }),
 });
 
+const verifyBarCodeGeneratorSchema = Joi.object({
+  url: Joi.string().required().messages({
+    "string.empty": "Url is required",
+  })
+})
+
 // Schema for updating registration status (admin use)
 const updateRegistrationStatusSchema = Joi.object({
   registrationStatus: Joi.string()
@@ -329,5 +335,6 @@ export default {
   sendBusinessOtpSchema,
   verifyBusinessOtpSchema,
   updateRegistrationStatusSchema,
+  verifyBarCodeGeneratorSchema,
   inputValidator,
 };
