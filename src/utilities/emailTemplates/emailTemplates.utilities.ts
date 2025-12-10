@@ -187,8 +187,8 @@ export const getEmailTemplate = (
                          color: #ffffff;
                       "
                     >
-                      📞  <a href="tel:+2348115662760 style="color: #ffffff; text-decoration: underline;">
-    +234 811 566 2760
+                      📞  <a href="tel:+2347030721184 style="color: #ffffff; text-decoration: underline;">
+    +234 703 072 1184
   </a>
                     </td>
                   </tr>
