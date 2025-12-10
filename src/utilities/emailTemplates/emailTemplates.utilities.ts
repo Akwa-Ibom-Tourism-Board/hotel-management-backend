@@ -187,8 +187,8 @@ export const getEmailTemplate = (
                          color: #ffffff;
                       "
                     >
-                      📞  <a href="tel:+2341234567890" style="color: #ffffff; text-decoration: underline;">
-    +234 123 456 7890
+                      📞  <a href="tel:+2348115662760 style="color: #ffffff; text-decoration: underline;">
+    +234 811 566 2760
   </a>
                     </td>
                   </tr>
@@ -202,8 +202,8 @@ export const getEmailTemplate = (
                       "
                     >
                       ✉️
-                       <a href="mailto:info@akwaibomtourism.com" style="color: #ffffff; text-decoration: underline;">
-    info@akwaibomtourism.com
+                       <a href="mailto:info.akhtb@gmail.com" style="color: #ffffff; text-decoration: underline;">
+     info.akhtb@gmail.com
   </a>
                     </td>
                   </tr>
