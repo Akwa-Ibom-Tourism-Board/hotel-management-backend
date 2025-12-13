@@ -1,25 +1,91 @@
 import { JwtPayload } from "jsonwebtoken";
 import { adminService } from "../../services";
-import { responseUtilities } from "../../utilities";
+import { errorUtilities, responseUtilities } from "../../utilities";
 import { Request, Response } from "express";
+import { StatusCodes } from "../../constants";
 
+const addAdminController = errorUtilities.withControllerErrorHandling(
+  async (request: Request, response: Response) => {
+    const adminDetails = request.body;
 
-const allDyteMeetings = async (
-    request: JwtPayload,
-    response: Response
-  ): Promise<any> => {
-  
-    const allEvents: any = await adminService.getAllDyteMeetingsService()
-  
+    const createAdmin = await adminService.createAdminService(adminDetails);
+
     return responseUtilities.responseHandler(
       response,
-      allEvents.message,
-      allEvents.statusCode,
-      allEvents.data
+      createAdmin.message,
+      createAdmin.statusCode,
+      createAdmin.data
     );
-  };
+  }
+);
 
+const loginAdminController = errorUtilities.withControllerErrorHandling(
+  async (request: Request, response: Response) => {
+    const adminDetails = request.body;
+
+    const loginAdmin = await adminService.loginAdminService(adminDetails);
+
+    if (loginAdmin.statusCode === StatusCodes.OK) {
+      response.setHeader("x-access-token", loginAdmin.data.accessToken);
+    }
+
+    return responseUtilities.responseHandler(
+      response,
+      loginAdmin.message,
+      loginAdmin.statusCode,
+      loginAdmin.data
+    );
+  }
+);
+
+const getAllEstablishments = errorUtilities.withControllerErrorHandling(
+  async (request: Request, response: Response) => {
+    const allEstablishments: any =
+      await adminService.getAllEstablishmentsService();
+
+    return responseUtilities.responseHandler(
+      response,
+      allEstablishments.message,
+      allEstablishments.statusCode,
+      allEstablishments.data
+    );
+  }
+);
+
+const getSingleEstablishment = errorUtilities.withControllerErrorHandling(
+  async (request: Request, response: Response) => {
+    const { establishmentId } = request.params;
+    const singleEstablishment: any =
+      await adminService.getSingleEstablishmentService(establishmentId);
+
+    return responseUtilities.responseHandler(
+      response,
+      singleEstablishment.message,
+      singleEstablishment.statusCode,
+      singleEstablishment.data
+    );
+  }
+);
+
+const approveEntityRegistrationController = errorUtilities.withControllerErrorHandling(
+  async (request: Request, response: Response) => {
+    const { establishmentId } = request.params;
+    const approveEstablishment: any =
+      await adminService.approveEntityRegistrationService(establishmentId);
+
+    return responseUtilities.responseHandler(
+      response,
+      approveEstablishment.message,
+      approveEstablishment.statusCode,
+      approveEstablishment.data
+    );
+  }
+);
 
 export default {
-    allDyteMeetings
-}
+  addAdminController,
+  getAllEstablishments,
+  getSingleEstablishment,
+  loginAdminController,
+  approveEntityRegistrationController,
+};

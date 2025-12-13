@@ -65,17 +65,28 @@ const establishmentRepositories = {
   ) => {
     try {
       const establishments = await HospitalityEstablishment.findAll({
-        where: filter,
+        ...(filter && { where: filter }),
         attributes: projection,
         ...options,
         order,
       });
+
       return establishments;
     } catch (error: any) {
       throw new Error(`Error fetching establishments: ${error.message}`);
     }
   },
+
+  updateOne: async (filter: any, update: any) => {
+    try {
+      const updatedEstablishment = await HospitalityEstablishment.update(update, {
+        where: filter,
+      });
+      return updatedEstablishment;
+    } catch (error: any) {
+      throw new Error(`Error updating establishment: ${error.message}`);
+    }
+  }
 };
 
 export default establishmentRepositories;
-

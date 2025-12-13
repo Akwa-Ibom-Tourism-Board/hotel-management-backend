@@ -330,11 +330,49 @@ const updateRegistrationStatusSchema = Joi.object({
 });
 
 
+const addAdminSchema = Joi.object({
+  fullName: Joi.string().trim().min(2).max(100).required().messages({
+    "string.empty": "Admin name is required",
+    "string.min": "Admin name must be at least 2 characters",
+    "string.max": "Admin name cannot exceed 100 characters",
+    "any.required": "Admin name is required",
+  }),
+
+  email: Joi.string().trim().email().required().messages({
+    "string.email": "Invalid admin email format",
+    "string.empty": "Admin email address is required",
+    "any.required": "Admin email address is required",
+  }),
+
+  password: Joi.string().min(6).required().messages({
+    "string.min": "Password must be at least 6 characters",
+    "string.empty": "Password is required",
+    "any.required": "Password is required",
+  }),
+});
+
+const loginAdminSchema = Joi.object({
+  email: Joi.string().trim().email().required().messages({
+    "string.email": "Invalid admin email format",
+    "string.empty": "Admin email address is required",
+    "any.required": "Admin email address is required",
+  }),
+
+  password: Joi.string().min(6).required().messages({
+    "string.min": "Password must be at least 6 characters",
+    "string.empty": "Password is required",
+    "any.required": "Password is required",
+  }),
+});
+
+
 export default {
   businessRegistrationSchema,
   sendBusinessOtpSchema,
   verifyBusinessOtpSchema,
   updateRegistrationStatusSchema,
   verifyBarCodeGeneratorSchema,
+  addAdminSchema,
+  loginAdminSchema,
   inputValidator,
 };

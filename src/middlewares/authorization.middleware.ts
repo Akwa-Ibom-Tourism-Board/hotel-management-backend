@@ -1,139 +1,151 @@
-// import { Response, NextFunction } from 'express';
-// import jwt, { JwtPayload } from 'jsonwebtoken';
-// import { generalHelpers } from '../helpers';
-// import { userRepositories } from '../repositories';
+import { Response, NextFunction } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { generalHelpers } from "../helpers";
+import { userRepositories } from "../repositories";
+import { TokenDuration } from "../types/userModelTypes";
 
-// export const generalAuthFunction = async (
-//   request: JwtPayload,
-//   response: Response,
-//   next: NextFunction,
-// ): Promise<any> => {
-//   try {
+export const generalAuthFunction = async (
+  request: JwtPayload,
+  response: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const authorizationHeader = request.headers.authorization;
 
-//     const authorizationHeader = request.headers.authorization;
+    const refreshToken = request.headers["x-refresh-token"];
 
-//     const refreshToken = request.headers['x-refresh-token'];
+    if (!authorizationHeader) {
+      return response.status(401).json({
+        message: "Please login again",
+      });
+    }
 
-//     if (!authorizationHeader) {
-//       return response.status(401).json({
-//         message: 'Please login again',
-//       });
-//     }
+    const authorizationToken = authorizationHeader.split(" ")[1];
 
-//     const authorizationToken = authorizationHeader.split(' ')[1];
+    if (!authorizationToken) {
+      return response.status(401).json({
+        status: "Failed",
+        message: "Login required",
+      });
+    }
 
-//     if (!authorizationToken) {
-//       return response.status(401).json({
-//         status: 'Failed',
-//         message: 'Login required',
-//       });
-//     }
+    let verifiedUser: any;
+    try {
+      verifiedUser = jwt.verify(
+        authorizationToken,
+        `${process.env.APP_SECRET}`
+    );
+    } catch (error: any) {
+      if (error.message === "jwt expired") {
+        if (!refreshToken) {
+          return response.status(401).json({
+            status: "error",
+            message: "Refresh Token not found. Please login again.",
+          });
+        }
 
-//     let verifiedUser:any;
-//     try {
-//       verifiedUser = jwt.verify(authorizationToken, `${process.env.APP_SECRET}`);
-//     } catch (error: any) {
+        let refreshVerifiedUser: any;
+        try {
+          refreshVerifiedUser = jwt.verify(
+            refreshToken,
+            `${process.env.APP_SECRET}`
+          );
+        } catch (refreshError: any) {
+          return response.status(401).json({
+            status: "error",
+            message: "Refresh Token Expired. Please login again.",
+          });
+        }
 
-//       if (error.message === 'jwt expired') {
+        const filter = { id: refreshVerifiedUser.userId };
 
-//         if (!refreshToken) {
-//           return response.status(401).json({
-//             status: 'error',
-//             message: 'Refresh Token not found. Please login again.',
-//           });
+        const projection = ["refreshToken", "isVerified"];
 
-//         }
+        const userDetails: any = await userRepositories.userRepositories.getOne(
+          filter,
+          projection
+        );
 
-//         let refreshVerifiedUser:any;
-//         try {
-//           refreshVerifiedUser = jwt.verify(refreshToken, `${process.env.APP_SECRET}`);
-//         } catch (refreshError: any) {
-//           return response.status(401).json({
-//             status: 'error',
-//             message: 'Refresh Token Expired. Please login again.',
-//           });
-//         }
+        const compareRefreshTokens = refreshToken === userDetails.refreshToken;
 
-//         const filter = { id: refreshVerifiedUser.id };
+        if (compareRefreshTokens === false) {
+          return response.status(401).json({
+            status: "error",
+            message: "Please login again.",
+          });
+        }
 
-//         const projection = [ 'refreshToken', 'isVerified' ];
+        const tokenPayload = {
+          userId: refreshVerifiedUser.userId,
+          email: refreshVerifiedUser.email,
+          role: refreshVerifiedUser.role,
+        };
 
-//         const userDetails:any = await userRepositories.userRepositories.getOne(filter, projection)
+        const newAccessToken = generalHelpers.generateTokens(
+          tokenPayload,
+          TokenDuration.accessTokenDuration
+        );
 
-//         const compareRefreshTokens = refreshToken === userDetails.refreshToken
+        const newRefreshToken = generalHelpers.generateTokens(
+          tokenPayload,
+          TokenDuration.refreshTokenDuration
+        );
 
-//         if(compareRefreshTokens === false){
-//           return response.status(401).json({
-//             status: 'error',
-//             message: 'Please login again.',
-//           });
-//         }
+        response.setHeader("x-access-token", newAccessToken);
 
-//         const tokenPayload = {
-//           id: refreshVerifiedUser.id,
-//           email: refreshVerifiedUser.email,
-//           role: refreshVerifiedUser.role
-//         };
+        response.setHeader("x-refresh-token", newRefreshToken);
 
-//         const newAccessToken = await generalHelpers.generateTokens(tokenPayload, '2h')
+        await userRepositories.userRepositories.updateOne(
+          { id: refreshVerifiedUser.userId },
+          { refreshToken }
+        );
 
-//         const newRefreshToken = await generalHelpers.generateTokens(tokenPayload, '30d')
+        request.user = refreshVerifiedUser;
 
-//         response.setHeader('x-access-token', newAccessToken);
+        return next();
+      }
 
-//         response.setHeader('x-refresh-token', newRefreshToken)
+      return response.status(401).json({
+        status: "error",
+        message: `Login Again, Invalid Token: ${error.message}`,
+      });
+    }
 
-//         await userRepositories.userRepositories.updateOne(
-//           { id: refreshVerifiedUser.id },
-//           { refreshToken }
-//         )
+    request.user = verifiedUser;
 
-//         request.user = refreshVerifiedUser;
+    return next();
+  } catch (error: any) {
+    return response.status(500).json({
+      status: "error",
+      message: `Internal Server Error: ${error.message}`,
+    });
+  }
+};
 
-//         return next();
-//       }
+export function rolePermit(roles: string[]) {
+  return async (
+    request: JwtPayload,
+    response: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    const userRole = request.user.role;
+    const { userId } = request.user;
+    if (!userRole || !userId) {
+      return response.status(401).json({
+        status: "error",
+        message: "User Not Authorized. Please login again",
+      });
+    }
 
-//       return response.status(401).json({
-//         status: 'error',
-//         message: `Login Again, Invalid Token: ${error.message}`,
-//       });
-//     }
+    const isAuthorized = roles.includes(userRole);
 
-//       request.user = verifiedUser;
+    if (!isAuthorized) {
+      return response.status(401).json({
+        status: "error",
+        message: "Not Permitted For Action",
+      });
+    }
 
-//       return next();
-
-//   } catch (error: any) {
-//     return response.status(500).json({
-//       status: 'error',
-//       message: `Internal Server Error: ${error.message}`,
-//     });
-//   }
-// };
-
-
-// export function rolePermit(roles: string[]) {
-//   return async (request: JwtPayload, response: Response, next: NextFunction): Promise<any> => {
-   
-//     const userRole = request.user.role
-//     const userId = request.user.id
-//     if (!userRole || !userId) {
-//       return response.status(401).json({
-//         status: 'error',
-//         message: 'User Not Authorized. Please login again',
-//       });
-//     }
-
-//     const isAuthorized = roles.includes(userRole);
-
-//     if (!isAuthorized) {
-//       return response.status(401).json({
-//         status: 'error',
-//         message: 'Not Permitted For Action',
-//       });
-//     }
-
-//     next();
-//   };
-// }
-
+    next();
+  };
+}

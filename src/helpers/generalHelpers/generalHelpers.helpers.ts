@@ -61,12 +61,12 @@ function generateAlphaNumericOtp(length: number = 6): string {
  * @throws {Error} - Throws an error if there is an issue with validating the password.
  */
 
-// const validatePassword = async (
-//   password: string,
-//   userPassword: string
-// ): Promise<boolean> => {
-//   return await brcrypt.compare(password, userPassword);
-// };
+const validatePassword = async (
+  password: string,
+  userPassword: string
+): Promise<boolean> => {
+  return await brcrypt.compare(password, userPassword);
+};
 
 /**
  * Generate Token:
@@ -234,7 +234,7 @@ export default {
   generateNumericOtp,
   generateAlphaNumericOtp,
   hashData,
-  // validatePassword,
+  validatePassword,
   generateTokens,
   verifyOtp,
   // refreshUserToken,
