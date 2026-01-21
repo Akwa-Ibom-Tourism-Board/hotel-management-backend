@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 
-const createError = (message: string, statusCode: number) => ({
+const createError = (message: string, statusCode: number, data?:any) => ({
   message,
   statusCode,
+  data,
   timestamp: new Date(),
   isOperational: true,
 });

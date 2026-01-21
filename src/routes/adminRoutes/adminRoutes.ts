@@ -21,11 +21,26 @@ router.post(
   adminController.loginAdminController
 );
 
+router.post(
+  "/bulk-add-establishments",
+  generalAuthFunction,
+  rolePermit([Roles.Admin]),
+  joiValidators.inputValidator(joiValidators.bulkHotelSchema),
+  adminController.bulkEntityRegistrationController
+);
+
 router.get(
   "/establishments",
   generalAuthFunction,
   rolePermit([Roles.Admin]),
   adminController.getAllEstablishments
+);
+
+router.get(
+  "/establishments/analytics-data",
+  generalAuthFunction,
+  rolePermit([Roles.Admin]),
+  adminController.getEntityAnalyticsDataController
 );
 
 router.get(

@@ -21,7 +21,6 @@ export const generalAuthFunction = async (
     }
 
     const authorizationToken = authorizationHeader.split(" ")[1];
-
     if (!authorizationToken) {
       return response.status(401).json({
         status: "Failed",
@@ -138,7 +137,6 @@ export function rolePermit(roles: string[]) {
     }
 
     const isAuthorized = roles.includes(userRole);
-
     if (!isAuthorized) {
       return response.status(401).json({
         status: "error",

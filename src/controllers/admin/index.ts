@@ -3,6 +3,7 @@ import { adminService } from "../../services";
 import { errorUtilities, responseUtilities } from "../../utilities";
 import { Request, Response } from "express";
 import { StatusCodes } from "../../constants";
+import bulkAddEstablishmentsService from "../../services/adminServices/adminAddEstablishmentsService";
 
 const addAdminController = errorUtilities.withControllerErrorHandling(
   async (request: Request, response: Response) => {
@@ -14,9 +15,9 @@ const addAdminController = errorUtilities.withControllerErrorHandling(
       response,
       createAdmin.message,
       createAdmin.statusCode,
-      createAdmin.data
+      createAdmin.data,
     );
-  }
+  },
 );
 
 const loginAdminController = errorUtilities.withControllerErrorHandling(
@@ -33,9 +34,9 @@ const loginAdminController = errorUtilities.withControllerErrorHandling(
       response,
       loginAdmin.message,
       loginAdmin.statusCode,
-      loginAdmin.data
+      loginAdmin.data,
     );
-  }
+  },
 );
 
 const getAllEstablishments = errorUtilities.withControllerErrorHandling(
@@ -47,9 +48,9 @@ const getAllEstablishments = errorUtilities.withControllerErrorHandling(
       response,
       allEstablishments.message,
       allEstablishments.statusCode,
-      allEstablishments.data
+      allEstablishments.data,
     );
-  }
+  },
 );
 
 const getSingleEstablishment = errorUtilities.withControllerErrorHandling(
@@ -62,25 +63,65 @@ const getSingleEstablishment = errorUtilities.withControllerErrorHandling(
       response,
       singleEstablishment.message,
       singleEstablishment.statusCode,
-      singleEstablishment.data
+      singleEstablishment.data,
     );
-  }
+  },
 );
 
-const approveEntityRegistrationController = errorUtilities.withControllerErrorHandling(
-  async (request: Request, response: Response) => {
-    const { establishmentId } = request.params;
-    const approveEstablishment: any =
-      await adminService.approveEntityRegistrationService(establishmentId);
+const approveEntityRegistrationController =
+  errorUtilities.withControllerErrorHandling(
+    async (request: Request, response: Response) => {
+      const { establishmentId } = request.params;
+      const approveEstablishment: any =
+        await adminService.approveEntityRegistrationService(establishmentId);
 
-    return responseUtilities.responseHandler(
-      response,
-      approveEstablishment.message,
-      approveEstablishment.statusCode,
-      approveEstablishment.data
-    );
-  }
-);
+      return responseUtilities.responseHandler(
+        response,
+        approveEstablishment.message,
+        approveEstablishment.statusCode,
+        approveEstablishment.data,
+      );
+    },
+  );
+
+const bulkEntityRegistrationController =
+  errorUtilities.withControllerErrorHandling(
+    async (request: JwtPayload, response: Response) => {
+      const { establishments } = request.body;
+      if (!establishments || !Array.isArray(establishments)) {
+        return responseUtilities.responseHandler(
+          response,
+          "Invalid request: establishments array is required",
+          StatusCodes.BAD_REQUEST,
+          null,
+        );
+      }
+
+      const result = await bulkAddEstablishmentsService(establishments);
+
+      return responseUtilities.responseHandler(
+        response,
+        result.message,
+        result.statusCode,
+        result.data,
+      );
+    },
+  );
+
+const getEntityAnalyticsDataController =
+  errorUtilities.withControllerErrorHandling(
+    async (request: Request, response: Response) => {
+      console.log("Fetching entity analytics data...");
+      const analyticsData: any =
+        await adminService.getEstablishmentAnalyticsService();
+      return responseUtilities.responseHandler(
+        response,
+        analyticsData.message,
+        analyticsData.statusCode,
+        analyticsData.data,
+      );
+    },
+  );
 
 export default {
   addAdminController,
@@ -88,4 +129,6 @@ export default {
   getSingleEstablishment,
   loginAdminController,
   approveEntityRegistrationController,
+  bulkEntityRegistrationController,
+  getEntityAnalyticsDataController,
 };
