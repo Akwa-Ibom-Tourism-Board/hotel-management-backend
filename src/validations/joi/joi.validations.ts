@@ -182,9 +182,9 @@ const businessRegistrationSchema = Joi.object({
   //   "any.required": "Phone verification status is required",
   // }),
 
-  address: Joi.string().trim().min(10).max(500).required().messages({
+  address: Joi.string().trim().min(4).max(500).required().messages({
     "string.empty": "Full business address is required",
-    "string.min": "Address must be at least 10 characters",
+    "string.min": "Address must be at least 4 characters",
     "string.max": "Address cannot exceed 500 characters",
     "any.required": "Full business address is required",
   }),
