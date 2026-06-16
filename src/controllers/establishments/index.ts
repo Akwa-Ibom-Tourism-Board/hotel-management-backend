@@ -75,7 +75,7 @@ const downloadLinkAsQrCode = errorUtilities.withControllerErrorHandling(
   }
 
   try {
-    const qrBuffer = await QRCode.toBuffer(url, { type: 'png' });
+    const qrBuffer = await QRCode.toBuffer(url, { type: 'png', width: 500 });
     response.setHeader('Content-Type', 'image/png');
     response.setHeader('Content-Disposition', 'attachment; filename="qrcode.png"');
 

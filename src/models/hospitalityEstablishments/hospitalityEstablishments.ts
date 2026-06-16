@@ -136,9 +136,9 @@ HospitalityEstablishment.init(
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        isUrl: {
-          msg: "Please enter a valid URL",
-        },
+        // isUrl: {
+        //   msg: "Please enter a valid URL",
+        // },
       },
     },
 

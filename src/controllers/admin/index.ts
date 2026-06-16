@@ -87,17 +87,13 @@ const approveEntityRegistrationController =
 const bulkEntityRegistrationController =
   errorUtilities.withControllerErrorHandling(
     async (request: JwtPayload, response: Response) => {
-      const { establishments } = request.body;
-      if (!establishments || !Array.isArray(establishments)) {
-        return responseUtilities.responseHandler(
-          response,
-          "Invalid request: establishments array is required",
-          StatusCodes.BAD_REQUEST,
-          null,
-        );
-      }
+      const body = request.body;
 
-      const result = await bulkAddEstablishmentsService(establishments);
+      const establishments = Array.isArray(body.establishments)
+        ? body.establishments
+        : [body];
+
+      const result = await bulkAddEstablishmentsService({ establishments });
 
       return responseUtilities.responseHandler(
         response,
@@ -123,6 +119,27 @@ const getEntityAnalyticsDataController =
     },
   );
 
+const updateEstablishmentController =
+  errorUtilities.withControllerErrorHandling(
+    async (request: Request, response: Response) => {
+      const { establishmentId } = request.params;
+      const updateData = request.body;
+
+      const updatedEstablishment =
+        await adminService.updateEstablishmentService(
+          establishmentId,
+          updateData,
+        );
+
+      return responseUtilities.responseHandler(
+        response,
+        updatedEstablishment.message,
+        updatedEstablishment.statusCode,
+        updatedEstablishment.data,
+      );
+    },
+  );
+
 export default {
   addAdminController,
   getAllEstablishments,
@@ -131,4 +148,5 @@ export default {
   approveEntityRegistrationController,
   bulkEntityRegistrationController,
   getEntityAnalyticsDataController,
+  updateEstablishmentController,
 };

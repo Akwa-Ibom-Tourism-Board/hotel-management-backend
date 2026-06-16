@@ -113,7 +113,9 @@ const loginAdminService = errorUtilities.withServiceErrorHandling(
 
 const getAllEstablishmentsService = errorUtilities.withServiceErrorHandling(
   async (): Promise<Record<string, any>> => {
-    const establishments = await establishmentRepositories.getMany({});
+    const establishments = await HospitalityEstablishment.findAll({
+      order: [["updatedAt", "DESC"]],
+    });
 
     return handleServicesResponse.handleServicesResponse(
       StatusCodes.OK,
@@ -240,7 +242,44 @@ const getEstablishmentAnalyticsService =
       );
     },
   );
+const updateEstablishmentService = errorUtilities.withServiceErrorHandling(
+  async (
+    establishmentId: string,
+    updateData: Record<string, any>,
+  ): Promise<Record<string, any>> => {
+    const entity = await establishmentRepositories.getOne({
+      id: establishmentId,
+    });
 
+    if (!entity) {
+      throw errorUtilities.createError(
+        AdminServiceResponses.ESTABLISHMENT_NOT_FOUND,
+        StatusCodes.NOT_FOUND,
+      );
+    }
+
+    // Strip fields that should never be updated directly
+    const {
+      id,
+      uniqueBusinessId,
+      submittedAt,
+      approvedAt,
+      approvedBy,
+      ...safeUpdateData
+    } = updateData;
+
+    const updatedEstablishment = await establishmentRepositories.updateOne(
+      { id: establishmentId },
+      safeUpdateData,
+    );
+
+    return handleServicesResponse.handleServicesResponse(
+      StatusCodes.OK,
+      AdminServiceResponses.PROCESS_SUCCESSFULL,
+      updatedEstablishment,
+    );
+  },
+);
 export default {
   getAllEstablishmentsService,
   createAdminService,
@@ -248,4 +287,5 @@ export default {
   loginAdminService,
   approveEntityRegistrationService,
   getEstablishmentAnalyticsService,
+  updateEstablishmentService,
 };

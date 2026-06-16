@@ -31,31 +31,31 @@ const addEstablishment = errorUtilities.withServiceErrorHandling(
       uniqueBusinessId,
     });
 
-    if (contactEmail || businessEmail) {
-      const emailSubject =
-        EstablishmentEmailConstants.MailSubjects.REGISTRATION_SUCCESS;
-      const emailBody =
-        EstablishmentEmailConstants.generateMessages().REGISTRATION_SUCCESS(
-          establishmentPayload.businessName,
-          uniqueBusinessId
-        );
+    // if (contactEmail || businessEmail) {
+    //   const emailSubject =
+    //     EstablishmentEmailConstants.MailSubjects.REGISTRATION_SUCCESS;
+    //   const emailBody =
+    //     EstablishmentEmailConstants.generateMessages().REGISTRATION_SUCCESS(
+    //       establishmentPayload.businessName,
+    //       uniqueBusinessId
+    //     );
 
-      if (contactEmail) {
-        await emailQueueUtilities.addEmailToQueue({
-          to: contactEmail,
-          subject: emailSubject,
-          body: emailBody,
-        });
-      }
+    //   if (contactEmail) {
+    //     await emailQueueUtilities.addEmailToQueue({
+    //       to: contactEmail,
+    //       subject: emailSubject,
+    //       body: emailBody,
+    //     });
+    //   }
 
-      if (businessEmail) {
-        await emailQueueUtilities.addEmailToQueue({
-          to: businessEmail,
-          subject: emailSubject,
-          body: emailBody,
-        });
-      }
-    }
+    //   if (businessEmail) {
+    //     await emailQueueUtilities.addEmailToQueue({
+    //       to: businessEmail,
+    //       subject: emailSubject,
+    //       body: emailBody,
+    //     });
+    //   }
+    // }
 
     return handleServicesResponse.handleServicesResponse(
       StatusCodes.CREATED,

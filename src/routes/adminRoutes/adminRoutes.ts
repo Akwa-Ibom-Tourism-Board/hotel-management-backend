@@ -25,7 +25,7 @@ router.post(
   "/bulk-add-establishments",
   generalAuthFunction,
   rolePermit([Roles.Admin]),
-  joiValidators.inputValidator(joiValidators.bulkHotelSchema),
+  joiValidators.inputValidator(joiValidators.singleOrBulkHotelSchema),
   adminController.bulkEntityRegistrationController
 );
 
@@ -55,6 +55,13 @@ router.patch(
   generalAuthFunction,
   rolePermit([Roles.Admin]),
   adminController.approveEntityRegistrationController
+);
+
+router.patch(
+  "/establishments/:establishmentId",
+  generalAuthFunction,
+  rolePermit([Roles.Admin]),
+  adminController.updateEstablishmentController,
 );
 
 export default router;
