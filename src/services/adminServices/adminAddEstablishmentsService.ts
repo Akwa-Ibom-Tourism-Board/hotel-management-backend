@@ -50,7 +50,8 @@ const processBatch = async (
       const existingEstablishment = await HospitalityEstablishment.findOne({
         where: {
           businessName: establishment.businessName,
-          contactEmail: establishment.contactEmail
+          entityType: establishment.entityType,
+          address: establishment.address
         }
       });
 
