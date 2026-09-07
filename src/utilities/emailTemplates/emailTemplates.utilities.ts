@@ -8,7 +8,7 @@ export const getEmailTemplate = (
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Akwa Ibom State Hotels and Tourism Board</title>
+    <title>Akwa Ibom State Hotels and Tourism Development Commission</title>
   </head>
   <body
     style="
@@ -56,7 +56,7 @@ export const getEmailTemplate = (
                     "
                     >🏢</span
                   >
-                  Akwa Ibom State Hotels and Tourism Board
+                  Akwa Ibom State Hotels and Tourism Development Commission
                 </h1>
               </td>
             </tr>
@@ -67,7 +67,7 @@ export const getEmailTemplate = (
                 <h2
                   style="font-size: 24px; font-weight: bold; margin: 0 0 16px 0"
                 >
-                  Welcome to the Akwa Ibom State Hotels and Tourism Board!
+                  Welcome to the Akwa Ibom State Hotels and Tourism Development Commission!
                 </h2>
               </td>
             </tr>
@@ -136,7 +136,7 @@ export const getEmailTemplate = (
                     margin: 8px 0 0 0;
                   "
                 >
-                  The Akwa Ibom State Hotels and Tourism Board Team
+                  The Akwa Ibom State Hotels and Tourism Development Commission Team
                 </p>
               </td>
             </tr>
@@ -265,7 +265,7 @@ export const getEmailTemplate = (
 
                 <p style="font-size: 12px; opacity: 0.7; margin-top: 20px; color: #ffffff;">
                   &copy; ${new Date().getFullYear()} Akwa Ibom State Hotels and
-                  Tourism Board. All rights reserved.
+                  Tourism Development Commission. All rights reserved.
                 </p>
               </td>
             </tr>
@@ -281,7 +281,7 @@ export const emailTemplates = {
   welcome: (userName: string, verificationLink?: string) =>
     getEmailTemplate(
       `Dear ${userName},<br><br>
-       Welcome to the Akwa Ibom State Hotels and Tourism Board Portal! We're excited to have you join our community of hospitality professionals.<br><br>
+       Welcome to the Akwa Ibom State Hotels and Tourism Development Commission Portal! We're excited to have you join our community of hospitality professionals.<br><br>
        As part of our mandate to register and regulate all hospitality establishments in Akwa Ibom State, we're committed to supporting your business growth and compliance.`,
       verificationLink,
       "Verify Your Account"
@@ -290,7 +290,7 @@ export const emailTemplates = {
   registrationComplete: (businessName: string) =>
     getEmailTemplate(
       `Dear Proprietor,<br><br>
-       We're pleased to inform you that your registration for <strong>${businessName}</strong> has been successfully completed and received by the Akwa Ibom State Hotels and Tourism Board.<br><br>
+       We're pleased to inform you that your registration for <strong>${businessName}</strong> has been successfully completed and received by the Akwa Ibom State Hotels and Tourism Development Commission.<br><br>
        Your application is now under review. You will be notified once the review process is complete.`,
       undefined,
       undefined
@@ -298,7 +298,7 @@ export const emailTemplates = {
 
   passwordReset: (resetLink: string) =>
     getEmailTemplate(
-      `We received a request to reset your password for the Akwa Ibom State Hotels and Tourism Board Portal.<br><br>
+      `We received a request to reset your password for the Akwa Ibom State Hotels and Tourism Development Commission Portal.<br><br>
        Click the button below to create a new password. This link will expire in 1 hour for security reasons.`,
       resetLink,
       "Reset Password"

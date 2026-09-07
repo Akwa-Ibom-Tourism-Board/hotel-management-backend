@@ -18,7 +18,7 @@ const generateMessages = () => {
     ) => {
       return `
         <p>Dear ${establishmentName},</p>
-        <p>Your hospitality establishment has been successfully registered with the Akwa Ibom State Hotels and Tourism Board.</p>
+        <p>Your hospitality establishment has been successfully registered with the Akwa Ibom State Hotels and Tourism Development Commission.</p>
         <p><strong>Establishment Code:</strong> ${establishmentCode}</p>
         <p>Please keep this code safe as it will be used for all future communications and updates regarding your establishment.</p>
         <p>Thank you for complying with the hospitality registration process.</p>
