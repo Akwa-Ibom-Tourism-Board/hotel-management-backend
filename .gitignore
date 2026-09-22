@@ -1,4 +1,5 @@
 node_modules
 dist
-check.html
 .env
+flyway-local.conf
+flyway-prod.conf

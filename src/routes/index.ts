@@ -1,13 +1,14 @@
-import { Router } from 'express';
-import userRouter from './userRoutes/userRoutes';
-import adminRouter from './adminRoutes/adminRoutes';
-import establishmentRouter from './establishmentRoutes/establishmentRoutes';
+import { Router } from "express";
+import authRouter from "../auth/auth.routes";
+import establishmentsRouter from "../establishments/establishments.routes";
+import analyticsRouter from "../analytics/analytics.routes";
+import adminRouter from "../admin/admin.routes";
 
 const rootRouter = Router();
 
-rootRouter.use('/users', userRouter);
-rootRouter.use('/admin', adminRouter);
-rootRouter.use('/establishments', establishmentRouter);
-
+rootRouter.use("/auth", authRouter);
+rootRouter.use("/establishments", establishmentsRouter);
+rootRouter.use("/analytics", analyticsRouter);
+rootRouter.use("/admin", adminRouter);
 
 export default rootRouter;
