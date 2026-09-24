@@ -3,3 +3,4 @@ dist
 .env
 flyway-local.conf
 flyway-prod.conf
+BACKEND_REBUILD_SPEC.md
