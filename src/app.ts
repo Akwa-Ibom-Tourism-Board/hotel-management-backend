@@ -18,7 +18,11 @@ errorUtilities.processErrorHandler();
 app.disable("x-powered-by");
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: ["X-Total-Count", "X-Page", "X-Total-Pages", "X-Limit"],
+  }),
+);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cookieParser());

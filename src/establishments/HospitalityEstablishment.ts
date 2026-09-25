@@ -97,7 +97,10 @@ HospitalityEstablishment.init(
         return formatEstablishmentName(this.getDataValue("businessName"));
       },
       set(value: string | null | undefined) {
-        this.setDataValue("businessName", formatEstablishmentName(value) ?? null);
+        this.setDataValue(
+          "businessName",
+          formatEstablishmentName(value) ?? null,
+        );
       },
     },
 
@@ -195,7 +198,10 @@ HospitalityEstablishment.init(
         },
       },
       set(value: string | null | undefined) {
-        this.setDataValue("contactEmail", value ? value.trim().toLowerCase() : (value ?? null));
+        this.setDataValue(
+          "contactEmail",
+          value ? value.trim().toLowerCase() : (value ?? null),
+        );
       },
     },
 
@@ -208,7 +214,10 @@ HospitalityEstablishment.init(
         },
       },
       set(value: string | null | undefined) {
-        this.setDataValue("businessEmail", value ? value.trim().toLowerCase() : (value ?? null));
+        this.setDataValue(
+          "businessEmail",
+          value ? value.trim().toLowerCase() : (value ?? null),
+        );
       },
     },
 

@@ -2,16 +2,17 @@ import { Request, Response } from "express";
 import errorUtilities from "../../../../configurations/error-handler";
 import responseUtilities from "../../../../configurations/response";
 import { setPaginationHeaders } from "../../../../configurations/pagination";
-import listService from "../services/list.service";
+import listUsersService from "../services/list.service";
 
 const list = errorUtilities.withControllerErrorHandling(
   async (request: Request, response: Response) => {
     const query = request.validatedQuery ?? {};
 
-    const result = await listService({
-      registrationStatus: query.registrationStatus,
-      entityType: query.entityType,
+    const result = await listUsersService({
       search: query.search,
+      role: query.role,
+      sortBy: query.sortBy,
+      sortOrder: query.sortOrder,
       page: query.page,
       limit: query.limit,
     });

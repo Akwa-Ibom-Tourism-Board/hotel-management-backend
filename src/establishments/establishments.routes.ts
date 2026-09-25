@@ -1,5 +1,5 @@
 import express from "express";
-import validate, { validateQuery } from "../configurations/validate";
+import validate, { validateQuery, validateUuidParam } from "../configurations/validate";
 import authenticate from "../configurations/authenticate";
 import {
   establishmentSchema,
@@ -9,6 +9,7 @@ import {
   branchSchema,
   branchUpdateSchema,
   searchQuerySchema,
+  mineQuerySchema,
 } from "./establishments.schemas";
 
 import search from "./controllers/search";
@@ -28,11 +29,11 @@ import deleteBranch from "./controllers/delete-branch";
 const router = express.Router();
 
 router.get("/search", authenticate, validateQuery(searchQuerySchema), search);
-router.get("/mine", authenticate, listMine);
-router.get("/:id", authenticate, getOne);
+router.get("/mine", authenticate, validateQuery(mineQuerySchema), listMine);
+router.get("/:id", authenticate, validateUuidParam("id"), getOne);
 
 router.post("/", authenticate, validate(establishmentSchema), create);
-router.patch("/:id", authenticate, update);
+router.patch("/:id", authenticate, validateUuidParam("id"), update);
 
 router.post(
   "/bulk",
@@ -50,10 +51,11 @@ router.post(
 router.patch(
   "/draft/:id",
   authenticate,
+  validateUuidParam("id"),
   validate(draftEstablishmentSchema),
   updateDraft,
 );
-router.post("/draft/:id/submit", authenticate, submitDraft);
+router.post("/draft/:id/submit", authenticate, validateUuidParam("id"), submitDraft);
 
 router.post(
   "/bulk/draft",
@@ -62,13 +64,20 @@ router.post(
   bulkCreateDraft,
 );
 
-router.post("/:id/branches", authenticate, validate(branchSchema), addBranch);
+router.post(
+  "/:id/branches",
+  authenticate,
+  validateUuidParam("id"),
+  validate(branchSchema),
+  addBranch,
+);
 router.patch(
   "/branches/:branchId",
   authenticate,
+  validateUuidParam("branchId"),
   validate(branchUpdateSchema),
   updateBranch,
 );
-router.delete("/branches/:branchId", authenticate, deleteBranch);
+router.delete("/branches/:branchId", authenticate, validateUuidParam("branchId"), deleteBranch);
 
 export default router;

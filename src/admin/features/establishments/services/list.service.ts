@@ -4,8 +4,14 @@ import responseUtilities from "../../../../configurations/response";
 import { StatusCodes } from "../../../../configurations/statusCodes";
 import { HospitalityEstablishment, RegistrationStatus } from "../../../../establishments/HospitalityEstablishment";
 import { escapeLikePattern } from "../../../../establishments/helpers/format-name.helpers";
+import {
+  getPagination,
+  buildPaginationMeta,
+  toSequelizeOptions,
+  PaginationQuery,
+} from "../../../../configurations/pagination";
 
-export interface AdminListFilters {
+export interface AdminListFilters extends PaginationQuery {
   registrationStatus?: string;
   entityType?: string;
   search?: string;
@@ -36,16 +42,23 @@ const listService = errorUtilities.withServiceErrorHandling(
       ];
     }
 
-    const establishments = await HospitalityEstablishment.findAll({
+    // This list spans every owner (557+ rows and growing) — pagination is
+    // mandatory here, not opt-in like the owner-scoped lists.
+    const pagination = getPagination(filters);
+
+    const { rows, count } = await HospitalityEstablishment.findAndCountAll({
       where,
       include: [{ association: "branches" }],
       order: [["updatedAt", "DESC"]],
+      ...toSequelizeOptions(pagination),
+      distinct: true,
     });
 
     return responseUtilities.handleServicesResponse(
       StatusCodes.OK,
       "Establishments fetched successfully",
-      establishments,
+      rows,
+      buildPaginationMeta(count, pagination),
     );
   },
 );

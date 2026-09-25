@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { LOCAL_GOVERNMENTS, NIGERIAN_PHONE_REGEX } from "../configurations/constants";
+import { paginationSchemaFields } from "../configurations/pagination";
 import { EntityType } from "./HospitalityEstablishment";
 
 const HOTEL_LIKE = [EntityType.Hotel];
@@ -235,4 +236,9 @@ export const branchUpdateSchema = Joi.object({
 // still just data passed as a query parameter, never concatenated into SQL.
 export const searchQuerySchema = Joi.object({
   q: Joi.string().trim().max(200).allow("").default(""),
+  ...paginationSchemaFields,
+}).unknown(false);
+
+export const mineQuerySchema = Joi.object({
+  ...paginationSchemaFields,
 }).unknown(false);

@@ -1,9 +1,10 @@
 import express from "express";
 import Joi from "joi";
-import validate, { validateQuery } from "../../../configurations/validate";
+import validate, { validateQuery, validateUuidParam } from "../../../configurations/validate";
 import authenticate, { rolePermit } from "../../../configurations/authenticate";
 import { Roles } from "../../../auth/User";
 import { EntityType, RegistrationStatus } from "../../../establishments/HospitalityEstablishment";
+import { paginationSchemaFields } from "../../../configurations/pagination";
 
 import list from "./controllers/list";
 import getOne from "./controllers/get-one";
@@ -32,6 +33,7 @@ const listQuerySchema = Joi.object({
     .valid(...Object.values(EntityType))
     .optional(),
   search: Joi.string().trim().max(200).allow("").optional(),
+  ...paginationSchemaFields,
 }).unknown(false);
 
 // Registered before "/:id" — otherwise the single-segment :id param would
@@ -39,9 +41,9 @@ const listQuerySchema = Joi.object({
 router.get("/analytics-data", analyticsSummary);
 
 router.get("/", validateQuery(listQuerySchema), list);
-router.get("/:id", getOne);
-router.patch("/:id/approve", approve);
-router.patch("/:id/reject", validate(rejectSchema), reject);
-router.patch("/:id", update);
+router.get("/:id", validateUuidParam("id"), getOne);
+router.patch("/:id/approve", validateUuidParam("id"), approve);
+router.patch("/:id/reject", validateUuidParam("id"), validate(rejectSchema), reject);
+router.patch("/:id", validateUuidParam("id"), update);
 
 export default router;

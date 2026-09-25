@@ -1,24 +1,21 @@
 import { Request, Response } from "express";
 import errorUtilities from "../../../../configurations/error-handler";
 import responseUtilities from "../../../../configurations/response";
-import { setPaginationHeaders } from "../../../../configurations/pagination";
-import listService from "../services/list.service";
+import getOneUserService from "../services/get-one.service";
 
-const list = errorUtilities.withControllerErrorHandling(
+const getOne = errorUtilities.withControllerErrorHandling(
   async (request: Request, response: Response) => {
     const query = request.validatedQuery ?? {};
 
-    const result = await listService({
-      registrationStatus: query.registrationStatus,
-      entityType: query.entityType,
+    const result = await getOneUserService(request.params.id!, {
       search: query.search,
+      entityType: query.entityType,
+      registrationStatus: query.registrationStatus,
+      sortBy: query.sortBy,
+      sortOrder: query.sortOrder,
       page: query.page,
       limit: query.limit,
     });
-
-    if (result.meta) {
-      setPaginationHeaders(response, result.meta);
-    }
 
     return responseUtilities.responseHandler(
       response,
@@ -29,4 +26,4 @@ const list = errorUtilities.withControllerErrorHandling(
   },
 );
 
-export default list;
+export default getOne;

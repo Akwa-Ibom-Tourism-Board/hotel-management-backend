@@ -57,4 +57,28 @@ export const validateQuery = (schema: Joi.Schema) => {
   };
 };
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Rejects a malformed `:id`-style route param before it ever reaches a
+ * query — without this, an invalid UUID reaches Postgres as a raw
+ * `WHERE id = '...'` comparison and the driver throws a raw, unhandled
+ * "invalid input syntax for type uuid" error (a 500 with a leaked stack
+ * trace) instead of a clean 400/404.
+ */
+export const validateUuidParam = (paramName: string) => {
+  return (request: Request, response: Response, next: NextFunction): any => {
+    const value = request.params[paramName];
+
+    if (typeof value !== "string" || !UUID_REGEX.test(value)) {
+      return response.status(400).json({
+        status: "error",
+        message: `Invalid ${paramName}`,
+      });
+    }
+
+    return next();
+  };
+};
+
 export default validate;

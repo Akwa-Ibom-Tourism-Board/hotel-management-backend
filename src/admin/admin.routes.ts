@@ -6,12 +6,14 @@ import { bulkEstablishmentSchema } from "../establishments/establishments.schema
 
 import adminAuthRouter from "./features/auth/admin-auth.routes";
 import adminEstablishmentsRouter from "./features/establishments/admin-establishments.routes";
+import adminUsersRouter from "./features/users/admin-users.routes";
 import bulkAdd from "./features/establishments/controllers/bulk-add";
 
 const router = express.Router();
 
 router.use("/", adminAuthRouter);
 router.use("/establishments", adminEstablishmentsRouter);
+router.use("/users", adminUsersRouter);
 
 router.post(
   "/bulk-add-establishments",
