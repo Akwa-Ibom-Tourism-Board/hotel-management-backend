@@ -48,7 +48,14 @@ const listService = errorUtilities.withServiceErrorHandling(
 
     const { rows, count } = await HospitalityEstablishment.findAndCountAll({
       where,
-      include: [{ association: "branches" }],
+      // Branches are returned flat in this same list (no parentEstablishmentId
+      // filter above) since they're licensable entities in their own right —
+      // `parent` lets the admin UI label a branch row as "Branch of X"
+      // without a second round trip.
+      include: [
+        { association: "branches" },
+        { association: "parent", attributes: ["id", "businessName", "uniqueBusinessId"] },
+      ],
       order: [["updatedAt", "DESC"]],
       ...toSequelizeOptions(pagination),
       distinct: true,

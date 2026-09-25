@@ -1,5 +1,6 @@
 import { Op, Transaction } from "sequelize";
 import { HospitalityEstablishment, RegistrationStatus } from "../HospitalityEstablishment";
+import { createBranchRow } from "./create-branch.helpers";
 
 /**
  * Reconciles a parent establishment's branches against an incoming array:
@@ -42,16 +43,7 @@ export const reconcileBranches = async (
         transaction,
       });
     } else {
-      await HospitalityEstablishment.create(
-        {
-          ...branchData,
-          entityType: parentEntityType,
-          ownerId,
-          parentEstablishmentId: parentId,
-          registrationStatus,
-        } as any,
-        { transaction },
-      );
+      await createBranchRow(parentId, parentEntityType, ownerId, registrationStatus, branchData, transaction);
     }
   }
 };

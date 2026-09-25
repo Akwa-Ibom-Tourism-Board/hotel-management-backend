@@ -6,18 +6,17 @@ import { Roles } from "../../../auth/User";
 import { EntityType, RegistrationStatus } from "../../../establishments/HospitalityEstablishment";
 import { paginationSchemaFields } from "../../../configurations/pagination";
 
-import list from "./controllers/list";
+import listUsers from "./controllers/list-users";
 import getOne from "./controllers/get-one";
 
 const router = express.Router();
 
 router.use(authenticate, rolePermit([Roles.Admin]));
 
-const listUsersQuerySchema = Joi.object({
+// role is NOT a client-settable filter here — this route is fixed to
+// role: user by its controller; use /admin/admins to list admins instead.
+export const listAccountsQuerySchema = Joi.object({
   search: Joi.string().trim().max(200).allow("").optional(),
-  role: Joi.string()
-    .valid(...Object.values(Roles))
-    .optional(),
   sortBy: Joi.string()
     .valid("fullName", "firstName", "lastName", "email", "createdAt", "updatedAt")
     .optional(),
@@ -25,7 +24,7 @@ const listUsersQuerySchema = Joi.object({
   ...paginationSchemaFields,
 }).unknown(false);
 
-const getUserQuerySchema = Joi.object({
+export const getAccountQuerySchema = Joi.object({
   search: Joi.string().trim().max(200).allow("").optional(),
   entityType: Joi.string()
     .valid(...Object.values(EntityType))
@@ -40,7 +39,7 @@ const getUserQuerySchema = Joi.object({
   ...paginationSchemaFields,
 }).unknown(false);
 
-router.get("/", validateQuery(listUsersQuerySchema), list);
-router.get("/:id", validateUuidParam("id"), validateQuery(getUserQuerySchema), getOne);
+router.get("/", validateQuery(listAccountsQuerySchema), listUsers);
+router.get("/:id", validateUuidParam("id"), validateQuery(getAccountQuerySchema), getOne);
 
 export default router;

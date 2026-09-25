@@ -4,6 +4,7 @@ import { StatusCodes } from "../../configurations/statusCodes";
 import { database } from "../../configurations/database";
 import { HospitalityEstablishment, RegistrationStatus } from "../HospitalityEstablishment";
 import { generateUniqueEstablishmentId } from "../helpers/unique-business-id.helpers";
+import { createBranchRow } from "../helpers/create-branch.helpers";
 import { BranchInput } from "./create.service";
 
 const bulkCreateService = errorUtilities.withServiceErrorHandling(
@@ -40,16 +41,16 @@ const bulkCreateService = errorUtilities.withServiceErrorHandling(
         );
 
         if (Array.isArray(branches) && branches.length > 0) {
-          await HospitalityEstablishment.bulkCreate(
-            branches.map((branch: BranchInput) => ({
-              ...branch,
-              entityType: establishmentPayload.entityType,
+          for (const branch of branches as BranchInput[]) {
+            await createBranchRow(
+              created.get("id") as string,
+              establishmentPayload.entityType,
               ownerId,
-              parentEstablishmentId: created.get("id"),
-              registrationStatus: RegistrationStatus.Pending,
-            })) as any,
-            { transaction },
-          );
+              RegistrationStatus.Pending,
+              branch,
+              transaction,
+            );
+          }
         }
 
         ids.push(created.get("id") as string);

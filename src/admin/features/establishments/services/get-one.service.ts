@@ -9,16 +9,28 @@ const getOneService = errorUtilities.withServiceErrorHandling(
       include: [
         { association: "branches" },
         {
+          association: "parent",
+          attributes: ["id", "businessName", "uniqueBusinessId"],
+        },
+        {
           association: "owner",
           attributes: {
-            exclude: ["password", "refreshToken", "emailOtpHash", "passwordResetTokenHash"],
+            exclude: [
+              "password",
+              "refreshToken",
+              "emailOtpHash",
+              "passwordResetTokenHash",
+            ],
           },
         },
       ],
     });
 
     if (!establishment) {
-      throw errorUtilities.createError("Establishment not found", StatusCodes.NOT_FOUND);
+      throw errorUtilities.createError(
+        "Establishment not found",
+        StatusCodes.NOT_FOUND,
+      );
     }
 
     return responseUtilities.handleServicesResponse(

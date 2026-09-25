@@ -12,25 +12,39 @@ const issueSession = async (user: User) => {
     role: user.get("role") as string,
   };
 
-  const token = jwtUtilities.signToken(tokenPayload, TokenDuration.accessTokenDuration);
-  const refreshToken = jwtUtilities.signToken(tokenPayload, TokenDuration.refreshTokenDuration);
+  const token = jwtUtilities.signToken(
+    tokenPayload,
+    TokenDuration.accessTokenDuration,
+  );
+  const refreshToken = jwtUtilities.signToken(
+    tokenPayload,
+    TokenDuration.refreshTokenDuration,
+  );
 
   await user.update({ refreshToken });
 
-  return { token, user: serializeUser(user) };
+  return { token, refreshToken, user: serializeUser(user) };
 };
 
 const loginService = errorUtilities.withServiceErrorHandling(
   async (email: string, password: string) => {
-    const user = await User.findOne({ where: { email: email.trim().toLowerCase() } });
+    const user = await User.findOne({
+      where: { email: email.trim().toLowerCase() },
+    });
 
     if (!user || !user.get("password")) {
-      throw errorUtilities.createError("Invalid email or password", StatusCodes.BAD_REQUEST);
+      throw errorUtilities.createError(
+        "Invalid email or password",
+        StatusCodes.BAD_REQUEST,
+      );
     }
 
     const isValid = await compareHash(password, user.get("password") as string);
     if (!isValid) {
-      throw errorUtilities.createError("Invalid email or password", StatusCodes.BAD_REQUEST);
+      throw errorUtilities.createError(
+        "Invalid email or password",
+        StatusCodes.BAD_REQUEST,
+      );
     }
 
     if (!user.get("emailVerified")) {
@@ -42,7 +56,11 @@ const loginService = errorUtilities.withServiceErrorHandling(
 
     const session = await issueSession(user);
 
-    return responseUtilities.handleServicesResponse(StatusCodes.OK, "Login successful", session);
+    return responseUtilities.handleServicesResponse(
+      StatusCodes.OK,
+      "Login successful",
+      session,
+    );
   },
 );
 

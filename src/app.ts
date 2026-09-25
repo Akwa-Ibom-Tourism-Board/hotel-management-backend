@@ -20,7 +20,14 @@ app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    exposedHeaders: ["X-Total-Count", "X-Page", "X-Total-Pages", "X-Limit"],
+    exposedHeaders: [
+      "X-Total-Count",
+      "X-Page",
+      "X-Total-Pages",
+      "X-Limit",
+      "x-access-token",
+      "x-refresh-token",
+    ],
   }),
 );
 app.use(logger("dev"));

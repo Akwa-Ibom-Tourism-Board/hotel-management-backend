@@ -1,7 +1,9 @@
 import errorUtilities from "../../configurations/error-handler";
 import responseUtilities from "../../configurations/response";
 import { StatusCodes } from "../../configurations/statusCodes";
+import { database } from "../../configurations/database";
 import { HospitalityEstablishment } from "../HospitalityEstablishment";
+import { createBranchRow } from "../helpers/create-branch.helpers";
 import { BranchInput } from "./create.service";
 
 const assertOwnedByCaller = (establishment: HospitalityEstablishment, userId: string) => {
@@ -23,13 +25,16 @@ export const addBranchService = errorUtilities.withServiceErrorHandling(
 
     assertOwnedByCaller(parent, userId);
 
-    const branch = await HospitalityEstablishment.create({
-      ...payload,
-      entityType: parent.get("entityType"),
-      ownerId: parent.get("ownerId"),
-      parentEstablishmentId: parent.get("id"),
-      registrationStatus: parent.get("registrationStatus"),
-    } as any);
+    const branch = await database.transaction((transaction) =>
+      createBranchRow(
+        parent.get("id") as string,
+        parent.get("entityType") as string,
+        parent.get("ownerId") as string | null,
+        parent.get("registrationStatus") as any,
+        payload,
+        transaction,
+      ),
+    );
 
     return responseUtilities.handleServicesResponse(
       StatusCodes.CREATED,
