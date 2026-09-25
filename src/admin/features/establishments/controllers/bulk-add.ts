@@ -5,8 +5,8 @@ import bulkAddService from "../services/bulk-add.service";
 
 const bulkAdd = errorUtilities.withControllerErrorHandling(
   async (request: Request, response: Response) => {
-    const { entityType, establishments } = request.body;
-    const result = await bulkAddService(entityType, establishments);
+    const { establishments } = request.body;
+    const result = await bulkAddService(establishments);
 
     return responseUtilities.responseHandler(
       response,

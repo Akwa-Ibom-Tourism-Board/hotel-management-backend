@@ -2,7 +2,7 @@ import express from "express";
 import authenticate, { rolePermit } from "../configurations/authenticate";
 import validate from "../configurations/validate";
 import { Roles } from "../auth/User";
-import { bulkEstablishmentSchema } from "../establishments/establishments.schemas";
+import { adminBulkAddEstablishmentSchema } from "../establishments/establishments.schemas";
 
 import adminAuthRouter from "./features/auth/admin-auth.routes";
 import adminEstablishmentsRouter from "./features/establishments/admin-establishments.routes";
@@ -19,7 +19,7 @@ router.post(
   "/bulk-add-establishments",
   authenticate,
   rolePermit([Roles.Admin]),
-  validate(bulkEstablishmentSchema),
+  validate(adminBulkAddEstablishmentSchema),
   bulkAdd,
 );
 

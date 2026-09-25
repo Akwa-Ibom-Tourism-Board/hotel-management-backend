@@ -169,6 +169,18 @@ export const bulkDraftEstablishmentSchema = Joi.object({
   establishments: Joi.array().items(draftEstablishmentSchema).min(1).max(500).required(),
 });
 
+// Admin seeding, unlike the owner's own bulk-create, is not one form
+// submission of a single entity type — the admin is re-keying a mixed batch
+// of pre-existing records, so each item just carries its own entityType with
+// no shared top-level one to cross-check against.
+export const adminBulkAddEstablishmentSchema = Joi.object({
+  establishments: Joi.array().items(establishmentSchema).min(1).max(500).required().messages({
+    "array.min": "At least one establishment is required",
+    "array.max": "Cannot submit more than 500 establishments at once",
+    "any.required": "Establishments data is required",
+  }),
+});
+
 export const branchSchema = Joi.object({
   businessName: Joi.string().trim().max(200).allow("", null).optional(),
   address: Joi.string().trim().max(500).required().messages({

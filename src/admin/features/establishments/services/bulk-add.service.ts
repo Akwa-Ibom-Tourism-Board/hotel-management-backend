@@ -2,7 +2,10 @@ import errorUtilities from "../../../../configurations/error-handler";
 import responseUtilities from "../../../../configurations/response";
 import { StatusCodes } from "../../../../configurations/statusCodes";
 import { database } from "../../../../configurations/database";
-import { HospitalityEstablishment, RegistrationStatus } from "../../../../establishments/HospitalityEstablishment";
+import {
+  HospitalityEstablishment,
+  RegistrationStatus,
+} from "../../../../establishments/HospitalityEstablishment";
 import { generateUniqueEstablishmentId } from "../../../../establishments/helpers/unique-business-id.helpers";
 import { formatEstablishmentName } from "../../../../establishments/helpers/format-name.helpers";
 
@@ -20,7 +23,12 @@ const processBatch = async (
   startIndex: number,
   transaction: any,
 ): Promise<BulkAddResult> => {
-  const result: BulkAddResult = { successful: 0, failed: 0, errors: [], establishments: [] };
+  const result: BulkAddResult = {
+    successful: 0,
+    failed: 0,
+    errors: [],
+    establishments: [],
+  };
 
   for (let i = 0; i < batch.length; i++) {
     const establishment = batch[i]!;
@@ -30,7 +38,9 @@ const processBatch = async (
       // Compare against the same normalized form the DB actually stores
       // (businessName is title-cased on write) — an exact-match WHERE clause
       // against the raw, as-typed casing would miss real duplicates.
-      const normalizedName = formatEstablishmentName(establishment.businessName);
+      const normalizedName = formatEstablishmentName(
+        establishment.businessName,
+      );
 
       const existing = await HospitalityEstablishment.findOne({
         where: {
@@ -81,17 +91,17 @@ const processBatch = async (
 };
 
 const bulkAddService = errorUtilities.withServiceErrorHandling(
-  async (entityType: string, establishments: Record<string, any>[]) => {
-    const mismatched = establishments.some((item) => item.entityType !== entityType);
-    if (mismatched) {
-      throw errorUtilities.createError(
-        "Every establishment in a batch must share the same entity type",
-        StatusCodes.BAD_REQUEST,
-      );
-    }
-
+  async (establishments: Record<string, any>[]) => {
+    // Unlike the owner's own bulk-create, admin seeding is a mixed batch of
+    // pre-existing records — each item is validated (and its uniqueBusinessId
+    // generated) against its own entityType, with no shared type to enforce.
     const totalCount = establishments.length;
-    const aggregate: BulkAddResult = { successful: 0, failed: 0, errors: [], establishments: [] };
+    const aggregate: BulkAddResult = {
+      successful: 0,
+      failed: 0,
+      errors: [],
+      establishments: [],
+    };
 
     const batches: Array<Array<Record<string, any>>> = [];
     for (let i = 0; i < establishments.length; i += BATCH_SIZE) {
@@ -103,7 +113,11 @@ const bulkAddService = errorUtilities.withServiceErrorHandling(
       const transaction = await database.transaction();
 
       try {
-        const result = await processBatch(batch, batchIndex * BATCH_SIZE, transaction);
+        const result = await processBatch(
+          batch,
+          batchIndex * BATCH_SIZE,
+          transaction,
+        );
         await transaction.commit();
 
         aggregate.successful += result.successful;
@@ -127,7 +141,12 @@ const bulkAddService = errorUtilities.withServiceErrorHandling(
       return responseUtilities.handleServicesResponse(
         StatusCodes.CREATED,
         "All establishments registered successfully",
-        { totalCount, successful: aggregate.successful, failed: 0, establishments: aggregate.establishments },
+        {
+          totalCount,
+          successful: aggregate.successful,
+          failed: 0,
+          establishments: aggregate.establishments,
+        },
       );
     }
 
