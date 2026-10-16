@@ -89,6 +89,13 @@ export const establishmentSchema = Joi.object({
     "any.required": "Business email address is required",
   }),
 
+  // Owner Details — who to eventually invite, distinct from contactName/
+  // contactEmail above. Optional: self-registered establishments already
+  // have ownerId set directly and don't need this filled in.
+  ownerFirstName: Joi.string().trim().max(100).allow("", null).optional(),
+  ownerLastName: Joi.string().trim().max(100).allow("", null).optional(),
+  ownerEmail: Joi.string().trim().email().allow("", null).optional(),
+
   // `.required()` on the `is` schema matters: without it, Joi treats an
   // ABSENT entityType (e.g. a partial update payload that only claims
   // ownership) as satisfying `is`, wrongly routing into the "then" branch
@@ -146,6 +153,9 @@ export const draftEstablishmentSchema = Joi.object({
   contactPhoneNumber: Joi.string().trim().allow("", null).optional(),
   contactEmail: Joi.string().trim().allow("", null).optional(),
   businessEmail: Joi.string().trim().allow("", null).optional(),
+  ownerFirstName: Joi.string().trim().max(100).allow("", null).optional(),
+  ownerLastName: Joi.string().trim().max(100).allow("", null).optional(),
+  ownerEmail: Joi.string().trim().allow("", null).optional(),
   roomCount: Joi.number().integer().allow(null).optional(),
   bedSpaces: Joi.number().integer().allow(null).optional(),
   facilities: Joi.array().items(Joi.string()).optional(),

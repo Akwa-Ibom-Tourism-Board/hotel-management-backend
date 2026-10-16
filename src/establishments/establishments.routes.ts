@@ -10,6 +10,12 @@ import {
   branchUpdateSchema,
   searchQuerySchema,
   mineQuerySchema,
+  accommodationUpsertSchema,
+  employmentStatsUpsertSchema,
+  wageStatsUpsertSchema,
+  guestArrivalStatsUpsertSchema,
+  occupancyStatsUpsertSchema,
+  reportingYearQuerySchema,
 } from "./establishments.schemas";
 
 import search from "./controllers/search";
@@ -24,6 +30,12 @@ import submitDraft from "./controllers/submit-draft";
 import bulkCreateDraft from "./controllers/bulk-create-draft";
 import addBranch from "./controllers/add-branch";
 import updateBranch from "./controllers/update-branch";
+import * as accommodationSection from "./controllers/sections/accommodation";
+import * as employmentStatsSection from "./controllers/sections/employment-stats";
+import * as wageStatsSection from "./controllers/sections/wage-stats";
+import * as guestArrivalsSection from "./controllers/sections/guest-arrivals";
+import * as occupancySection from "./controllers/sections/occupancy";
+import sectionsSummary from "./controllers/sections/summary";
 
 const router = express.Router();
 
@@ -79,5 +91,76 @@ router.patch(
 );
 // Branch deletion is admin-only (DELETE /admin/establishments/branches/:id) —
 // not exposed to owners here.
+
+router.get("/:id/sections-summary", authenticate, validateUuidParam("id"), sectionsSummary);
+
+router.get("/:id/accommodation", authenticate, validateUuidParam("id"), accommodationSection.get);
+router.put(
+  "/:id/accommodation",
+  authenticate,
+  validateUuidParam("id"),
+  validate(accommodationUpsertSchema),
+  accommodationSection.put,
+);
+
+router.get(
+  "/:id/employment-stats",
+  authenticate,
+  validateUuidParam("id"),
+  validateQuery(reportingYearQuerySchema),
+  employmentStatsSection.get,
+);
+router.put(
+  "/:id/employment-stats",
+  authenticate,
+  validateUuidParam("id"),
+  validate(employmentStatsUpsertSchema),
+  employmentStatsSection.put,
+);
+
+router.get(
+  "/:id/wage-stats",
+  authenticate,
+  validateUuidParam("id"),
+  validateQuery(reportingYearQuerySchema),
+  wageStatsSection.get,
+);
+router.put(
+  "/:id/wage-stats",
+  authenticate,
+  validateUuidParam("id"),
+  validate(wageStatsUpsertSchema),
+  wageStatsSection.put,
+);
+
+router.get(
+  "/:id/guest-arrivals",
+  authenticate,
+  validateUuidParam("id"),
+  validateQuery(reportingYearQuerySchema),
+  guestArrivalsSection.get,
+);
+router.put(
+  "/:id/guest-arrivals",
+  authenticate,
+  validateUuidParam("id"),
+  validate(guestArrivalStatsUpsertSchema),
+  guestArrivalsSection.put,
+);
+
+router.get(
+  "/:id/occupancy",
+  authenticate,
+  validateUuidParam("id"),
+  validateQuery(reportingYearQuerySchema),
+  occupancySection.get,
+);
+router.put(
+  "/:id/occupancy",
+  authenticate,
+  validateUuidParam("id"),
+  validate(occupancyStatsUpsertSchema),
+  occupancySection.put,
+);
 
 export default router;

@@ -3,8 +3,12 @@ import responseUtilities from "../../../../configurations/response";
 import { StatusCodes } from "../../../../configurations/statusCodes";
 import { HospitalityEstablishment } from "../../../../establishments/HospitalityEstablishment";
 
-// Protected fields: identity/generated (id, uniqueBusinessId) and the
-// review-decision fields owned exclusively by the approve/reject endpoints.
+// Protected fields: identity/generated (id, uniqueBusinessId), the
+// review-decision fields owned exclusively by the approve/reject endpoints,
+// the disable/enable fields owned by their own dedicated endpoints (so a
+// disable always goes through the email-sending flow, never silently via a
+// generic PATCH), and ownerId (owned by the owner's self-registration claim
+// flow and the admin "send welcome email" flow).
 const PROTECTED_FIELDS = [
   "id",
   "uniqueBusinessId",
@@ -13,6 +17,10 @@ const PROTECTED_FIELDS = [
   "approvedBy",
   "registrationStatus",
   "rejectionReason",
+  "isDisabled",
+  "disabledAt",
+  "disabledReason",
+  "ownerId",
 ];
 
 const updateService = errorUtilities.withServiceErrorHandling(
