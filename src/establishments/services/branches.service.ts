@@ -76,3 +76,18 @@ export const deleteBranchService = errorUtilities.withServiceErrorHandling(
     return responseUtilities.handleServicesResponse(StatusCodes.OK, "Branch deleted successfully");
   },
 );
+
+/** Admin variant — no ownership check, since admins can delete any branch. */
+export const adminDeleteBranchService = errorUtilities.withServiceErrorHandling(
+  async (branchId: string) => {
+    const branch = await HospitalityEstablishment.findByPk(branchId);
+
+    if (!branch || !branch.get("parentEstablishmentId")) {
+      throw errorUtilities.createError("Branch not found", StatusCodes.NOT_FOUND);
+    }
+
+    await branch.destroy();
+
+    return responseUtilities.handleServicesResponse(StatusCodes.OK, "Branch deleted successfully");
+  },
+);

@@ -24,7 +24,6 @@ import submitDraft from "./controllers/submit-draft";
 import bulkCreateDraft from "./controllers/bulk-create-draft";
 import addBranch from "./controllers/add-branch";
 import updateBranch from "./controllers/update-branch";
-import deleteBranch from "./controllers/delete-branch";
 
 const router = express.Router();
 
@@ -78,6 +77,7 @@ router.patch(
   validate(branchUpdateSchema),
   updateBranch,
 );
-router.delete("/branches/:branchId", authenticate, validateUuidParam("branchId"), deleteBranch);
+// Branch deletion is admin-only (DELETE /admin/establishments/branches/:id) —
+// not exposed to owners here.
 
 export default router;

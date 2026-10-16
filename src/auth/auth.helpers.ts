@@ -40,6 +40,19 @@ export const generateUrlToken = (): string => {
   return crypto.randomBytes(32).toString("hex");
 };
 
+/** A readable-enough random temporary password (letters + digits, no
+ * ambiguous characters) for admin-provisioned accounts — always paired
+ * with `mustChangePassword: true` so it's never kept long-term. */
+export const generateTemporaryPassword = (length = 10): string => {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  const bytes = crypto.randomBytes(length);
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += alphabet[bytes[i]! % alphabet.length];
+  }
+  return password;
+};
+
 // Deterministic (unlike bcrypt) so a reset token can be looked up by its hash
 // directly in a WHERE clause, instead of scanning every user's bcrypt hash.
 export const hashToken = (token: string): string => {

@@ -10,12 +10,12 @@ import { emailVerificationOtpTemplate } from "../emailTemplates/emailVerificatio
 const EMAIL_OTP_TTL_MS = 10 * 60 * 1000;
 
 export interface RegisterPayload {
-  nin: string;
+  nin?: string;
   firstName: string;
   lastName: string;
-  dateOfBirth: string;
+  dateOfBirth?: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   password: string;
 }
 
@@ -24,7 +24,7 @@ const registerService = errorUtilities.withServiceErrorHandling(
     const email = payload.email.trim().toLowerCase();
 
     const existing = await User.findOne({
-      where: { [Op.or]: [{ email }, { nin: payload.nin }] },
+      where: payload.nin ? { [Op.or]: [{ email }, { nin: payload.nin }] } : { email },
     });
 
     if (existing) {
@@ -40,11 +40,11 @@ const registerService = errorUtilities.withServiceErrorHandling(
 
     await User.create({
       email,
-      nin: payload.nin,
+      nin: payload.nin ?? null,
       firstName: payload.firstName,
       lastName: payload.lastName,
-      dateOfBirth: payload.dateOfBirth,
-      phoneNumber: payload.phoneNumber,
+      dateOfBirth: payload.dateOfBirth ?? null,
+      phoneNumber: payload.phoneNumber ?? null,
       password: await hashData(payload.password),
       role: Roles.User,
       emailVerified: false,

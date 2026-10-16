@@ -85,7 +85,6 @@ const registerSchema = Joi.object({
   email: emailSchema,
   phoneNumber: phoneSchema.optional(),
   password: passwordSchema,
-  confirmPassword: Joi.any().strip(),
 });
 
 const verifyEmailOtpSchema = Joi.object({ email: emailSchema, otp: otpSchema });

@@ -1,6 +1,6 @@
 import express from "express";
 import Joi from "joi";
-import { validateQuery, validateUuidParam } from "../../../configurations/validate";
+import validate, { validateQuery, validateUuidParam } from "../../../configurations/validate";
 import authenticate, { rolePermit } from "../../../configurations/authenticate";
 import { Roles } from "../../../auth/User";
 import { EntityType, RegistrationStatus } from "../../../establishments/HospitalityEstablishment";
@@ -8,10 +8,16 @@ import { paginationSchemaFields } from "../../../configurations/pagination";
 
 import listUsers from "./controllers/list-users";
 import getOne from "./controllers/get-one";
+import disable from "./controllers/disable";
+import enable from "./controllers/enable";
 
 const router = express.Router();
 
 router.use(authenticate, rolePermit([Roles.Admin]));
+
+const disableSchema = Joi.object({
+  reason: Joi.string().trim().max(500).allow("", null).optional(),
+});
 
 // role is NOT a client-settable filter here — this route is fixed to
 // role: user by its controller; use /admin/admins to list admins instead.
@@ -41,5 +47,7 @@ export const getAccountQuerySchema = Joi.object({
 
 router.get("/", validateQuery(listAccountsQuerySchema), listUsers);
 router.get("/:id", validateUuidParam("id"), validateQuery(getAccountQuerySchema), getOne);
+router.patch("/:id/disable", validateUuidParam("id"), validate(disableSchema), disable);
+router.patch("/:id/enable", validateUuidParam("id"), enable);
 
 export default router;

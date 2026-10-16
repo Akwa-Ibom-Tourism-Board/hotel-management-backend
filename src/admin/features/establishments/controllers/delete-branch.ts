@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import errorUtilities from "../../configurations/error-handler";
-import responseUtilities from "../../configurations/response";
-import { deleteBranchService } from "../services/branches.service";
+import errorUtilities from "../../../../configurations/error-handler";
+import responseUtilities from "../../../../configurations/response";
+import { adminDeleteBranchService } from "../../../../establishments/services/branches.service";
 
 const deleteBranch = errorUtilities.withControllerErrorHandling(
   async (request: Request, response: Response) => {
-    const result = await deleteBranchService(request.params.branchId!, request.user!.id);
+    const result = await adminDeleteBranchService(request.params.id!);
 
     return responseUtilities.responseHandler(
       response,

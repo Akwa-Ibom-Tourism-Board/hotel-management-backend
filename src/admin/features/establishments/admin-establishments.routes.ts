@@ -11,6 +11,10 @@ import getOne from "./controllers/get-one";
 import approve from "./controllers/approve";
 import reject from "./controllers/reject";
 import update from "./controllers/update";
+import disable from "./controllers/disable";
+import enable from "./controllers/enable";
+import sendWelcomeEmail from "./controllers/send-welcome-email";
+import deleteBranch from "./controllers/delete-branch";
 import analyticsSummary from "../analytics/controllers/summary";
 
 const router = express.Router();
@@ -23,6 +27,10 @@ const rejectSchema = Joi.object({
     "string.min": "Rejection reason must be at least 10 characters",
     "any.required": "Rejection reason is required when rejecting a registration",
   }),
+});
+
+const disableSchema = Joi.object({
+  reason: Joi.string().trim().max(500).allow("", null).optional(),
 });
 
 const listQuerySchema = Joi.object({
@@ -40,10 +48,17 @@ const listQuerySchema = Joi.object({
 // swallow this literal path first.
 router.get("/analytics-data", analyticsSummary);
 
+// Two-segment path, no collision with "/:id" regardless of registration
+// order — admin-only branch deletion (owners can't delete branches at all).
+router.delete("/branches/:id", validateUuidParam("id"), deleteBranch);
+
 router.get("/", validateQuery(listQuerySchema), list);
 router.get("/:id", validateUuidParam("id"), getOne);
 router.patch("/:id/approve", validateUuidParam("id"), approve);
 router.patch("/:id/reject", validateUuidParam("id"), validate(rejectSchema), reject);
+router.patch("/:id/disable", validateUuidParam("id"), validate(disableSchema), disable);
+router.patch("/:id/enable", validateUuidParam("id"), enable);
+router.post("/:id/send-welcome-email", validateUuidParam("id"), sendWelcomeEmail);
 router.patch("/:id", validateUuidParam("id"), update);
 
 export default router;
