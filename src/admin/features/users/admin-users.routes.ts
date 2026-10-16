@@ -24,7 +24,7 @@ const disableSchema = Joi.object({
 export const listAccountsQuerySchema = Joi.object({
   search: Joi.string().trim().max(200).allow("").optional(),
   sortBy: Joi.string()
-    .valid("fullName", "firstName", "lastName", "email", "createdAt", "updatedAt")
+    .valid("firstName", "lastName", "email", "createdAt", "updatedAt")
     .optional(),
   sortOrder: Joi.string().valid("asc", "desc").optional(),
   ...paginationSchemaFields,

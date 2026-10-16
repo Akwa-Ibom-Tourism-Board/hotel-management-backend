@@ -27,7 +27,7 @@ const disableUserService = errorUtilities.withServiceErrorHandling(
       );
     });
 
-    const template = accountDeactivatedTemplate((user.get("fullName") as string | null) ?? "there");
+    const template = accountDeactivatedTemplate((user.get("firstName") as string | null) ?? "there");
     await queueEmail({ to: user.get("email") as string, subject: template.subject, htmlBody: template.htmlBody });
 
     return responseUtilities.handleServicesResponse(

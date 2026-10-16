@@ -24,7 +24,7 @@ const EXCLUDED_ATTRIBUTES = [
 // Whitelisted, never taken from the request directly — sortBy/sortOrder feed
 // into a raw Sequelize `order` clause, so only known-safe column names may
 // reach it.
-const SORTABLE_COLUMNS = ["fullName", "firstName", "lastName", "email", "createdAt", "updatedAt"] as const;
+const SORTABLE_COLUMNS = ["firstName", "lastName", "email", "createdAt", "updatedAt"] as const;
 
 export interface AdminListUsersFilters extends PaginationQuery {
   search?: string;
@@ -48,7 +48,6 @@ const listUsersService = errorUtilities.withServiceErrorHandling(
     if (filters.search) {
       const safePattern = `%${escapeLikePattern(filters.search.trim())}%`;
       where[Op.or as any] = [
-        { fullName: { [Op.iLike]: safePattern } },
         { firstName: { [Op.iLike]: safePattern } },
         { lastName: { [Op.iLike]: safePattern } },
         { email: { [Op.iLike]: safePattern } },

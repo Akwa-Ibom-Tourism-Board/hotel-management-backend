@@ -58,7 +58,6 @@ const sendWelcomeEmailService = errorUtilities.withServiceErrorHandling(
       email: ownerEmail,
       firstName: ownerFirstName,
       lastName: ownerLastName,
-      fullName: `${ownerFirstName} ${ownerLastName}`,
       password: await hashData(temporaryPassword),
       role: Roles.User,
       emailVerified: true,

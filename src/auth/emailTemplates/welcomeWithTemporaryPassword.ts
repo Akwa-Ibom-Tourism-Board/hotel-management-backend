@@ -2,14 +2,14 @@ import { wrapEmailHtml } from "../../configurations/email";
 import configurations from "../../configurations";
 
 export const welcomeWithTemporaryPasswordTemplate = (
-  fullName: string,
+  name: string,
   email: string,
   temporaryPassword: string,
   businessName: string,
 ) => ({
   subject: "Your Akwa Ibom Hotels and Tourism Development Commission portal account",
   htmlBody: wrapEmailHtml(
-    `Hello ${fullName},<br><br>
+    `Hello ${name},<br><br>
      An account has been created for you on the Akwa Ibom State Hotels and Tourism Development Commission Portal, linked to <strong>${businessName}</strong>.<br><br>
      <strong>Email:</strong> ${email}<br>
      <strong>Temporary password:</strong> ${temporaryPassword}<br><br>

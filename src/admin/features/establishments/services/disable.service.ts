@@ -27,7 +27,7 @@ const disableEstablishmentService = errorUtilities.withServiceErrorHandling(
       const owner = await User.findByPk(ownerId);
       if (owner) {
         const template = establishmentDeactivatedTemplate(
-          (owner.get("fullName") as string | null) ?? "there",
+          (owner.get("firstName") as string | null) ?? "there",
           (establishment.get("businessName") as string | null) ?? "your establishment",
         );
         await queueEmail({ to: owner.get("email") as string, subject: template.subject, htmlBody: template.htmlBody });
