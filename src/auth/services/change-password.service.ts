@@ -17,7 +17,10 @@ const changePasswordService = errorUtilities.withServiceErrorHandling(
       throw errorUtilities.createError("Current password is incorrect", StatusCodes.BAD_REQUEST);
     }
 
-    await user.update({ password: await hashData(newPassword) });
+    // Clears the forced-change gate (set by the admin "send welcome email"
+    // flow) the first time it's cleared via a real password change —
+    // harmless no-op for accounts that never had it set.
+    await user.update({ password: await hashData(newPassword), mustChangePassword: false });
 
     return responseUtilities.handleServicesResponse(StatusCodes.OK, "Password changed successfully");
   },
