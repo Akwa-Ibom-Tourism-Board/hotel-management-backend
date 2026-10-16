@@ -56,8 +56,13 @@ const passwordSchema = Joi.string().min(8).max(128).required().messages({
 
 const ninLookupSchema = Joi.object({ nin: ninSchema });
 
+// NIN/dateOfBirth/phoneNumber are no longer required at registration (the
+// LumiID NIN-lookup flow stays available via POST /nin-lookup but isn't
+// required to complete signup) — self-registration is now just
+// firstName/lastName/email/password, matching the owner-portal's collapsed
+// single-step flow.
 const registerSchema = Joi.object({
-  nin: ninSchema,
+  nin: ninSchema.optional(),
   firstName: Joi.string().trim().min(1).max(100).required().messages({
     "any.required": "First name is required",
   }),
@@ -68,19 +73,19 @@ const registerSchema = Joi.object({
   // DD-MM-YYYY) and normalizes to YYYY-MM-DD for storage.
   dateOfBirth: Joi.string()
     .trim()
-    .required()
+    .optional()
     .custom((value, helpers) => {
       const parsed = parseDateOfBirth(value);
       if (!parsed) return helpers.error("any.invalid");
       return parsed;
     })
     .messages({
-      "any.required": "Date of birth is required",
       "any.invalid": "Date of birth must be a valid date (e.g. 1992-10-31 or 31-10-1992)",
     }),
   email: emailSchema,
-  phoneNumber: phoneSchema,
+  phoneNumber: phoneSchema.optional(),
   password: passwordSchema,
+  confirmPassword: Joi.any().strip(),
 });
 
 const verifyEmailOtpSchema = Joi.object({ email: emailSchema, otp: otpSchema });

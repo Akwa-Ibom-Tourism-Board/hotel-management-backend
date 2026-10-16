@@ -41,6 +41,10 @@ export interface HospitalityEstablishmentAttributes {
   contactEmail?: string | null;
   businessEmail?: string | null;
 
+  ownerFirstName?: string | null;
+  ownerLastName?: string | null;
+  ownerEmail?: string | null;
+
   roomCount?: number | null;
   bedSpaces?: number | null;
   facilities?: string[];
@@ -53,6 +57,10 @@ export interface HospitalityEstablishmentAttributes {
   approvedAt?: Date | null;
   approvedBy?: string | null;
   rejectionReason?: string | null;
+
+  isDisabled?: boolean;
+  disabledAt?: Date | null;
+  disabledReason?: string | null;
 
   createdAt?: Date;
   updatedAt?: Date;
@@ -221,6 +229,36 @@ HospitalityEstablishment.init(
       },
     },
 
+    // Who to eventually invite — distinct from contactName/contactEmail
+    // above, which stay general business-contact info (e.g. a manager).
+    // Populated at registration time; used by the admin "send welcome
+    // email" action to create/link the owning User account.
+    ownerFirstName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    ownerLastName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    ownerEmail: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isEmail: {
+          msg: "Invalid owner email format",
+        },
+      },
+      set(value: string | null | undefined) {
+        this.setDataValue(
+          "ownerEmail",
+          value ? value.trim().toLowerCase() : (value ?? null),
+        );
+      },
+    },
+
     roomCount: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -291,6 +329,26 @@ HospitalityEstablishment.init(
     },
 
     rejectionReason: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+
+    // Orthogonal to registrationStatus: an already-Approved establishment
+    // can still be disabled by an admin (directly, or cascaded from its
+    // owner's User.isActive being turned off — see
+    // admin/features/users/services/disable.service.ts).
+    isDisabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+
+    disabledAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+
+    disabledReason: {
       type: DataTypes.TEXT,
       allowNull: true,
     },

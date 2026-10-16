@@ -24,6 +24,8 @@ export interface UserAttributes {
   emailOtpExpiresAt?: Date | null;
   passwordResetTokenHash?: string | null;
   passwordResetExpiresAt?: Date | null;
+  isActive?: boolean;
+  mustChangePassword?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -161,6 +163,24 @@ User.init(
     passwordResetExpiresAt: {
       type: DataTypes.DATE,
       allowNull: true,
+    },
+
+    // Disabling a user cascades to every establishment they own (see
+    // admin/features/users/services/disable.service.ts) — login is rejected
+    // for as long as this is false (src/auth/services/login.service.ts).
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+
+    // Set when an admin provisions an account on an owner's behalf (the
+    // "send welcome email" flow) with a generated temporary password —
+    // cleared the first time the owner successfully changes their password.
+    mustChangePassword: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {

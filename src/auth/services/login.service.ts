@@ -6,6 +6,13 @@ import { User } from "../User";
 import { compareHash, serializeUser } from "../auth.helpers";
 
 const issueSession = async (user: User) => {
+  if (user.get("isActive") === false) {
+    throw errorUtilities.createError(
+      "Your account has been deactivated by the Commission. Please contact the Commission to resolve this.",
+      StatusCodes.FORBIDDEN,
+    );
+  }
+
   const tokenPayload = {
     id: user.get("id") as string,
     email: user.get("email") as string,

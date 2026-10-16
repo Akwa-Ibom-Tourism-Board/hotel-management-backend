@@ -71,5 +71,7 @@ export const serializeUser = (user: User) => {
     dateOfBirth: json.dateOfBirth ?? null,
     role: json.role,
     emailVerified: json.emailVerified,
+    isActive: json.isActive ?? true,
+    mustChangePassword: json.mustChangePassword ?? false,
   };
 };
