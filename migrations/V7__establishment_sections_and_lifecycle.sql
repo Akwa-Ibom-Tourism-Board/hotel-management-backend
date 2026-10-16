@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS "EstablishmentAccommodationCategories" (
   "categoryLabel" VARCHAR(100) NOT NULL,
   "roomCount" INTEGER,
   "bedCount" INTEGER,
+  "status" VARCHAR(20) NOT NULL DEFAULT 'draft',
   "createdAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
   "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT now()
 );

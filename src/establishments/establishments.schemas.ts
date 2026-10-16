@@ -2,6 +2,13 @@ import Joi from "joi";
 import { LOCAL_GOVERNMENTS, NIGERIAN_PHONE_REGEX } from "../configurations/constants";
 import { paginationSchemaFields } from "../configurations/pagination";
 import { EntityType } from "./HospitalityEstablishment";
+import {
+  ACCOMMODATION_CATEGORIES,
+  EMPLOYMENT_CATEGORIES,
+  SECTION_STATUSES,
+  MIN_REPORTING_YEAR,
+  maxReportingYear,
+} from "./constants/sections";
 
 const HOTEL_LIKE = [EntityType.Hotel];
 const DINING_LIKE = [EntityType.Restaurant, EntityType.Lounge, EntityType.Bar];
@@ -253,4 +260,81 @@ export const searchQuerySchema = Joi.object({
 
 export const mineQuerySchema = Joi.object({
   ...paginationSchemaFields,
+}).unknown(false);
+
+// --- Sectioned profile: Accommodation + 4 yearly statistics sections ---
+// All numeric fields are nullable/optional (status defaults to "draft") so
+// partial entry always validates — "Mark complete" is a status flip on the
+// frontend, not a stricter schema, so there's no loose/strict pair to keep
+// in sync per section the way the top-level establishment draft has.
+
+const sectionStatusSchema = Joi.string().valid(...SECTION_STATUSES).default("draft");
+
+const reportingYearSchema = Joi.number()
+  .integer()
+  .min(MIN_REPORTING_YEAR)
+  .max(maxReportingYear())
+  .required()
+  .messages({ "any.required": "Reporting year is required" });
+
+export const reportingYearQuerySchema = Joi.object({
+  year: Joi.number().integer().min(MIN_REPORTING_YEAR).max(maxReportingYear()).required(),
+}).unknown(false);
+
+const nonNegativeInt = Joi.number().integer().min(0).allow(null).optional();
+
+export const accommodationUpsertSchema = Joi.object({
+  status: sectionStatusSchema,
+  categories: Joi.array()
+    .items(
+      Joi.object({
+        category: Joi.string().valid(...ACCOMMODATION_CATEGORIES).required(),
+        categoryLabel: Joi.string().trim().min(1).max(100).required(),
+        roomCount: nonNegativeInt,
+        bedCount: nonNegativeInt,
+      }),
+    )
+    .default([]),
+}).unknown(false);
+
+export const employmentStatsUpsertSchema = Joi.object({
+  reportingYear: reportingYearSchema,
+  status: sectionStatusSchema,
+  categories: Joi.array()
+    .items(
+      Joi.object({
+        category: Joi.string().valid(...EMPLOYMENT_CATEGORIES).required(),
+        categoryLabel: Joi.string().trim().min(1).max(100).required(),
+        akwaIbomIndigenes: nonNegativeInt,
+        nonIndigenes: nonNegativeInt,
+        foreignEmployees: nonNegativeInt,
+      }),
+    )
+    .default([]),
+}).unknown(false);
+
+export const wageStatsUpsertSchema = Joi.object({
+  reportingYear: reportingYearSchema,
+  status: sectionStatusSchema,
+  employeesPaidCount: nonNegativeInt,
+  totalWageSalary: Joi.number().min(0).allow(null).optional(),
+}).unknown(false);
+
+export const guestArrivalStatsUpsertSchema = Joi.object({
+  reportingYear: reportingYearSchema,
+  status: sectionStatusSchema,
+  akwaIbomResidents: nonNegativeInt,
+  otherNigerianStates: nonNegativeInt,
+  internationalGuests: nonNegativeInt,
+  mostStateOfArrival: Joi.string().trim().max(100).allow("", null).optional(),
+  mostCountryOfArrival: Joi.string().trim().max(100).allow("", null).optional(),
+}).unknown(false);
+
+export const occupancyStatsUpsertSchema = Joi.object({
+  reportingYear: reportingYearSchema,
+  status: sectionStatusSchema,
+  availableRooms: nonNegativeInt,
+  roomNightsAvailable: nonNegativeInt,
+  roomNightsSold: nonNegativeInt,
+  totalGuestNights: nonNegativeInt,
 }).unknown(false);

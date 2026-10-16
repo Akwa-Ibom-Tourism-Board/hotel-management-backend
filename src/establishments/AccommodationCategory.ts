@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { database } from "../configurations/database";
-import { ACCOMMODATION_CATEGORIES } from "./constants/sections";
+import { ACCOMMODATION_CATEGORIES, SECTION_STATUSES } from "./constants/sections";
 
 export interface AccommodationCategoryAttributes {
   id: string;
@@ -9,6 +9,7 @@ export interface AccommodationCategoryAttributes {
   categoryLabel: string;
   roomCount?: number | null;
   bedCount?: number | null;
+  status?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -47,6 +48,12 @@ AccommodationCategory.init(
       type: DataTypes.INTEGER,
       allowNull: true,
       validate: { min: { args: [0], msg: "Bed count cannot be negative" } },
+    },
+    status: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      defaultValue: "draft",
+      validate: { isIn: [Array.from(SECTION_STATUSES)] },
     },
   },
   {
