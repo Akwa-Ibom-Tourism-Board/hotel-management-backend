@@ -46,5 +46,5 @@ export const EMPLOYMENT_CATEGORY_LABELS: Record<string, string> = {
 export const SECTION_STATUSES = ["draft", "complete"] as const;
 export type SectionStatus = (typeof SECTION_STATUSES)[number];
 
-export const MIN_REPORTING_YEAR = 2022;
+export const MIN_REPORTING_YEAR = 2024;
 export const maxReportingYear = (): number => new Date().getFullYear();
