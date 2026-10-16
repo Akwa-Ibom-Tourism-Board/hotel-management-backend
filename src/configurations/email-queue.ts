@@ -1,8 +1,14 @@
 import Queue from "bull";
 import configurations from ".";
-import { sendEmail } from "./email";
+import { sendEmail, warmUpEmailTransport } from "./email-sender";
 
 const emailQueue = new Queue("email queue", configurations.REDIS_URL!);
+
+emailQueue.client.on("ready", () => {
+  warmUpEmailTransport().catch((error) => {
+    console.error("Failed to warm up email transport:", error);
+  });
+});
 
 export const queueEmail = async (payload: {
   to: string;

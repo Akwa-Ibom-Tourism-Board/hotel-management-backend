@@ -1,29 +1,3 @@
-import nodemailer from "nodemailer";
-import configurations from ".";
-
-const transport = nodemailer.createTransport({
-  host: "smtp.sendgrid.net",
-  port: 2525,
-  secure: false,
-  auth: {
-    user: "apikey",
-    pass: configurations.SENDGRID_API_KEY!,
-  },
-});
-
-export const sendEmail = async (payload: {
-  to: string;
-  subject: string;
-  htmlBody: string;
-}): Promise<void> => {
-  await transport.sendMail({
-    from: `Akwa Ibom State Hotels and Tourism Development Commission <no-reply@ibomtourismboard.site>`,
-    to: payload.to,
-    subject: payload.subject,
-    html: payload.htmlBody,
-  });
-};
-
 /**
  * Wraps a message (and optional action button) in the branded email shell
  * used by every outgoing email.
@@ -243,6 +217,5 @@ export const wrapEmailHtml = (
 };
 
 export default {
-  sendEmail,
   wrapEmailHtml,
 };
