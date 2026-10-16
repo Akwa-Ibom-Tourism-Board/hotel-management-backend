@@ -47,4 +47,4 @@ export const SECTION_STATUSES = ["draft", "complete"] as const;
 export type SectionStatus = (typeof SECTION_STATUSES)[number];
 
 export const MIN_REPORTING_YEAR = 2022;
-export const maxReportingYear = (): number => new Date().getFullYear() + 1;
+export const maxReportingYear = (): number => new Date().getFullYear();
