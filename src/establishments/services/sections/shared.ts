@@ -25,6 +25,16 @@ export const assertEstablishmentAccess = async (
     );
   }
 
+  // Sections (Accommodation, Employment, Wage, Guest Arrivals, Occupancy,
+  // Room Rates) only apply to hotels for now — every section read/write
+  // goes through this same check.
+  if (establishment.get("entityType") !== "hotel") {
+    throw errorUtilities.createError(
+      "Sections are only available for hotel establishments",
+      StatusCodes.BAD_REQUEST,
+    );
+  }
+
   return establishment;
 };
 

@@ -327,7 +327,7 @@ export const wageStatsUpsertSchema = Joi.object({
   reportingYear: reportingYearSchema,
   status: sectionStatusSchema,
   employeesPaidCount: nonNegativeInt,
-  totalWageSalary: Joi.number().min(0).allow(null).optional(),
+  minimumMonthlySalaryGross: Joi.number().min(0).allow(null).optional(),
 }).unknown(false);
 
 export const guestArrivalStatsUpsertSchema = Joi.object({
@@ -347,4 +347,19 @@ export const occupancyStatsUpsertSchema = Joi.object({
   roomNightsAvailable: nonNegativeInt,
   roomNightsSold: nonNegativeInt,
   totalGuestNights: nonNegativeInt,
+}).unknown(false);
+
+// Room categories are owned by the Accommodation section — this schema only
+// takes a rate per existing category id, never a category/label.
+export const roomRateUpsertSchema = Joi.object({
+  reportingYear: reportingYearSchema,
+  status: sectionStatusSchema,
+  rates: Joi.array()
+    .items(
+      Joi.object({
+        accommodationCategoryId: Joi.string().uuid().required(),
+        rate: Joi.number().min(0).allow(null).optional(),
+      }),
+    )
+    .default([]),
 }).unknown(false);

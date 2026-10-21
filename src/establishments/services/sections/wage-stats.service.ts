@@ -8,18 +8,11 @@ export interface WageStatInput {
   reportingYear: number;
   status: string;
   employeesPaidCount?: number | null;
-  totalWageSalary?: number | null;
+  minimumMonthlySalaryGross?: number | null;
 }
 
-/** Pure arithmetic of the other two fields — never stored, always derived
- * fresh, so it can never drift out of sync with what was actually entered. */
-const withAverageMonthlyWage = (row: WageStat | null, reportingYear: number) => {
-  const json: any = row?.toJSON() ?? { reportingYear, status: "draft" };
-  const total = Number(json.totalWageSalary) || 0;
-  const count = Number(json.employeesPaidCount) || 0;
-  const averageMonthlyWage = count > 0 ? total / count / 12 : 0;
-  return { ...json, averageMonthlyWage };
-};
+const toJson = (row: WageStat | null, reportingYear: number) =>
+  row?.toJSON() ?? { reportingYear, status: "draft", employeesPaidCount: null, minimumMonthlySalaryGross: null };
 
 export const getWageStats = errorUtilities.withServiceErrorHandling(
   async (establishmentId: string, reportingYear: number, requireOwnerId?: string) => {
@@ -30,7 +23,7 @@ export const getWageStats = errorUtilities.withServiceErrorHandling(
     return responseUtilities.handleServicesResponse(
       StatusCodes.OK,
       "Wage and salary statistics fetched successfully",
-      withAverageMonthlyWage(row, reportingYear),
+      toJson(row, reportingYear),
     );
   },
 );
@@ -45,14 +38,14 @@ export const upsertWageStats = errorUtilities.withServiceErrorHandling(
     });
     await row.update({
       employeesPaidCount: payload.employeesPaidCount ?? null,
-      totalWageSalary: payload.totalWageSalary ?? null,
+      minimumMonthlySalaryGross: payload.minimumMonthlySalaryGross ?? null,
       status: payload.status,
     });
 
     return responseUtilities.handleServicesResponse(
       StatusCodes.OK,
       "Wage and salary statistics saved successfully",
-      withAverageMonthlyWage(row, payload.reportingYear),
+      toJson(row, payload.reportingYear),
     );
   },
 );

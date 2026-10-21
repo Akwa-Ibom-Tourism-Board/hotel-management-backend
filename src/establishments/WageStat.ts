@@ -7,7 +7,7 @@ export interface WageStatAttributes {
   establishmentId: string;
   reportingYear: number;
   employeesPaidCount?: number | null;
-  totalWageSalary?: number | null;
+  minimumMonthlySalaryGross?: number | null;
   status?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -40,7 +40,7 @@ WageStat.init(
       allowNull: true,
       validate: { min: { args: [0], msg: "Cannot be negative" } },
     },
-    totalWageSalary: {
+    minimumMonthlySalaryGross: {
       type: DataTypes.DECIMAL(14, 2),
       allowNull: true,
       validate: { min: { args: [0], msg: "Cannot be negative" } },

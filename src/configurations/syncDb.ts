@@ -7,6 +7,7 @@ import "../establishments/EmploymentStat";
 import "../establishments/WageStat";
 import "../establishments/GuestArrivalStat";
 import "../establishments/OccupancyStat";
+import "../establishments/RoomRate";
 import applyEstablishmentAssociations from "../establishments/associations";
 
 export async function syncDatabases() {

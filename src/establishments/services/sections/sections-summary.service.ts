@@ -6,6 +6,7 @@ import { EmploymentStat } from "../../EmploymentStat";
 import { WageStat } from "../../WageStat";
 import { GuestArrivalStat } from "../../GuestArrivalStat";
 import { OccupancyStat } from "../../OccupancyStat";
+import { RoomRate } from "../../RoomRate";
 import { assertEstablishmentAccess } from "./shared";
 
 /** One row per year that has ANY data for this multi-row-per-year section —
@@ -41,13 +42,14 @@ export const getSectionsSummary = errorUtilities.withServiceErrorHandling(
   async (establishmentId: string, requireOwnerId?: string) => {
     await assertEstablishmentAccess(establishmentId, requireOwnerId);
 
-    const [accommodationRows, employmentStats, wageStats, guestArrivalStats, occupancyStats] =
+    const [accommodationRows, employmentStats, wageStats, guestArrivalStats, occupancyStats, roomRates] =
       await Promise.all([
         AccommodationCategory.findAll({ where: { establishmentId }, attributes: ["status"], limit: 1 }),
         yearStatusSummary(EmploymentStat, establishmentId),
         singleRowYearStatusSummary(WageStat, establishmentId),
         singleRowYearStatusSummary(GuestArrivalStat, establishmentId),
         singleRowYearStatusSummary(OccupancyStat, establishmentId),
+        yearStatusSummary(RoomRate, establishmentId),
       ]);
 
     return responseUtilities.handleServicesResponse(StatusCodes.OK, "Sections summary fetched successfully", {
@@ -59,6 +61,7 @@ export const getSectionsSummary = errorUtilities.withServiceErrorHandling(
       wageStats,
       guestArrivalStats,
       occupancyStats,
+      roomRates,
     });
   },
 );
