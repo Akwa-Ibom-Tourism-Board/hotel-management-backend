@@ -1,6 +1,7 @@
 import errorUtilities from "../../../configurations/error-handler";
 import responseUtilities from "../../../configurations/response";
 import { StatusCodes } from "../../../configurations/statusCodes";
+import { Model, ModelStatic } from "sequelize";
 import { AccommodationCategory } from "../../AccommodationCategory";
 import { EmploymentStat } from "../../EmploymentStat";
 import { WageStat } from "../../WageStat";
@@ -14,7 +15,7 @@ import { assertEstablishmentAccess } from "./shared";
  * section's own full-replace upsert), so the first row's status stands in
  * for the whole year. */
 const yearStatusSummary = async (
-  model: typeof EmploymentStat,
+  model: ModelStatic<Model>,
   establishmentId: string,
 ): Promise<{ reportingYear: number; status: string }[]> => {
   const rows = await model.findAll({

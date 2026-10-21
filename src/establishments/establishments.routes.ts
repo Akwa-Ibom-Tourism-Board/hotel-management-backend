@@ -15,6 +15,7 @@ import {
   wageStatsUpsertSchema,
   guestArrivalStatsUpsertSchema,
   occupancyStatsUpsertSchema,
+  roomRateUpsertSchema,
   reportingYearQuerySchema,
 } from "./establishments.schemas";
 
@@ -35,6 +36,7 @@ import * as employmentStatsSection from "./controllers/sections/employment-stats
 import * as wageStatsSection from "./controllers/sections/wage-stats";
 import * as guestArrivalsSection from "./controllers/sections/guest-arrivals";
 import * as occupancySection from "./controllers/sections/occupancy";
+import * as roomRatesSection from "./controllers/sections/room-rates";
 import sectionsSummary from "./controllers/sections/summary";
 
 const router = express.Router();
@@ -161,6 +163,21 @@ router.put(
   validateUuidParam("id"),
   validate(occupancyStatsUpsertSchema),
   occupancySection.put,
+);
+
+router.get(
+  "/:id/room-rates",
+  authenticate,
+  validateUuidParam("id"),
+  validateQuery(reportingYearQuerySchema),
+  roomRatesSection.get,
+);
+router.put(
+  "/:id/room-rates",
+  authenticate,
+  validateUuidParam("id"),
+  validate(roomRateUpsertSchema),
+  roomRatesSection.put,
 );
 
 export default router;

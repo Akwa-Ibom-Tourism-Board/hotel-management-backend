@@ -11,6 +11,7 @@ import {
   wageStatsUpsertSchema,
   guestArrivalStatsUpsertSchema,
   occupancyStatsUpsertSchema,
+  roomRateUpsertSchema,
   reportingYearQuerySchema,
 } from "../../../establishments/establishments.schemas";
 
@@ -28,6 +29,7 @@ import * as employmentStatsSection from "./controllers/sections/employment-stats
 import * as wageStatsSection from "./controllers/sections/wage-stats";
 import * as guestArrivalsSection from "./controllers/sections/guest-arrivals";
 import * as occupancySection from "./controllers/sections/occupancy";
+import * as roomRatesSection from "./controllers/sections/room-rates";
 import sectionsSummary from "./controllers/sections/summary";
 import analyticsSummary from "../analytics/controllers/summary";
 
@@ -55,6 +57,10 @@ const listQuerySchema = Joi.object({
     .valid(...Object.values(EntityType))
     .optional(),
   search: Joi.string().trim().max(200).allow("").optional(),
+  // Filters behind the two new sidebar menus: establishments with an owner
+  // linked, and hotels that have any Sections data at all.
+  claimed: Joi.boolean().optional(),
+  sectionsStarted: Joi.boolean().optional(),
   ...paginationSchemaFields,
 }).unknown(false);
 
@@ -135,6 +141,19 @@ router.put(
   validateUuidParam("id"),
   validate(occupancyStatsUpsertSchema),
   occupancySection.put,
+);
+
+router.get(
+  "/:id/room-rates",
+  validateUuidParam("id"),
+  validateQuery(reportingYearQuerySchema),
+  roomRatesSection.get,
+);
+router.put(
+  "/:id/room-rates",
+  validateUuidParam("id"),
+  validate(roomRateUpsertSchema),
+  roomRatesSection.put,
 );
 
 export default router;

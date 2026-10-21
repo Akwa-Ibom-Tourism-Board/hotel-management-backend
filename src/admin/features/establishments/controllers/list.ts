@@ -12,6 +12,8 @@ const list = errorUtilities.withControllerErrorHandling(
       registrationStatus: query.registrationStatus,
       entityType: query.entityType,
       search: query.search,
+      claimed: query.claimed,
+      sectionsStarted: query.sectionsStarted,
       page: query.page,
       limit: query.limit,
     });
