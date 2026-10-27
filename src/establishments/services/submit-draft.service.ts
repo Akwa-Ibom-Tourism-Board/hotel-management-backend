@@ -6,6 +6,7 @@ import { HospitalityEstablishment, RegistrationStatus } from "../HospitalityEsta
 import { establishmentSchema, pickEstablishmentFields } from "../establishments.schemas";
 import { generateUniqueEstablishmentId } from "../helpers/unique-business-id.helpers";
 import { reconcileBranches } from "../helpers/reconcile-branches.helpers";
+import { notifyOwnerToFillSections } from "../helpers/notify-owner.helpers";
 
 const submitDraftService = errorUtilities.withServiceErrorHandling(
   async (id: string, incomingBody: Record<string, any>, ownerId: string) => {
@@ -80,6 +81,8 @@ const submitDraftService = errorUtilities.withServiceErrorHandling(
     const withBranches = await HospitalityEstablishment.findByPk(submitted.get("id") as string, {
       include: [{ association: "branches" }],
     });
+
+    await notifyOwnerToFillSections(ownerId, establishmentFields.businessName);
 
     return responseUtilities.handleServicesResponse(
       StatusCodes.OK,

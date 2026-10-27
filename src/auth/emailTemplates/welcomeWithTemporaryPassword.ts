@@ -13,7 +13,8 @@ export const welcomeWithTemporaryPasswordTemplate = (
      An account has been created for you on the Akwa Ibom State Hotels and Tourism Development Commission Portal, linked to <strong>${businessName}</strong>.<br><br>
      <strong>Email:</strong> ${email}<br>
      <strong>Temporary password:</strong> ${temporaryPassword}<br><br>
-     Please log in using the details above — you'll be asked to set a new password the first time you sign in. You can then share access with your team members or admin staff as needed.`,
+     Please log in using the details above — you'll be asked to set a new password the first time you sign in. You can then share access with your team members or admin staff as needed.<br><br>
+     Once logged in, please fill out <strong>${businessName}</strong>'s Accommodation, Employment, Wage, Guest Arrival, Occupancy and Room Rate sections — the Commission uses this information to track activity across the state.`,
     `${configurations.FRONTEND_URL}/login`,
     "Log In",
   ),

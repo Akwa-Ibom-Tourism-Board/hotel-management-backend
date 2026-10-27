@@ -5,6 +5,7 @@ import { database } from "../../configurations/database";
 import { HospitalityEstablishment, RegistrationStatus } from "../HospitalityEstablishment";
 import { generateUniqueEstablishmentId } from "../helpers/unique-business-id.helpers";
 import { createBranchRow } from "../helpers/create-branch.helpers";
+import { notifyOwnerToFillSections } from "../helpers/notify-owner.helpers";
 import { BranchInput } from "./create.service";
 
 const bulkCreateService = errorUtilities.withServiceErrorHandling(
@@ -63,6 +64,10 @@ const bulkCreateService = errorUtilities.withServiceErrorHandling(
       where: { id: createdIds },
       include: [{ association: "branches" }],
     });
+
+    await Promise.all(
+      created.map((row) => notifyOwnerToFillSections(ownerId, row.get("businessName") as string)),
+    );
 
     return responseUtilities.handleServicesResponse(
       StatusCodes.CREATED,

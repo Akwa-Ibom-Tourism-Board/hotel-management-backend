@@ -5,6 +5,7 @@ import { database } from "../../configurations/database";
 import { HospitalityEstablishment, RegistrationStatus } from "../HospitalityEstablishment";
 import { generateUniqueEstablishmentId } from "../helpers/unique-business-id.helpers";
 import { createBranchRow } from "../helpers/create-branch.helpers";
+import { notifyOwnerToFillSections } from "../helpers/notify-owner.helpers";
 
 export interface BranchInput {
   businessName?: string;
@@ -57,6 +58,8 @@ const createService = errorUtilities.withServiceErrorHandling(
     const withBranches = await HospitalityEstablishment.findByPk(establishment.get("id") as string, {
       include: [{ association: "branches" }],
     });
+
+    await notifyOwnerToFillSections(ownerId, establishmentPayload.businessName);
 
     return responseUtilities.handleServicesResponse(
       StatusCodes.CREATED,

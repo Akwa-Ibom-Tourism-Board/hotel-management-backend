@@ -6,6 +6,7 @@ import { database } from "../../configurations/database";
 import { HospitalityEstablishment } from "../HospitalityEstablishment";
 import { establishmentSchema, pickEstablishmentFields } from "../establishments.schemas";
 import { reconcileBranches } from "../helpers/reconcile-branches.helpers";
+import { notifyOwnerToFillSections } from "../helpers/notify-owner.helpers";
 
 // Same field-level rules as establishmentSchema, but every field optional —
 // "full validation of whatever fields are present", not a required-fields check.
@@ -68,6 +69,13 @@ const updateService = errorUtilities.withServiceErrorHandling(
     const withBranches = await HospitalityEstablishment.findByPk(updated.get("id") as string, {
       include: [{ association: "branches" }],
     });
+
+    // Only a genuine claim (no prior owner) should prompt the owner to go
+    // fill in Sections — an owner editing their own already-owned
+    // establishment doesn't need this nudge again.
+    if (currentOwnerId === null) {
+      await notifyOwnerToFillSections(userId, updated.get("businessName") as string);
+    }
 
     return responseUtilities.handleServicesResponse(
       StatusCodes.OK,

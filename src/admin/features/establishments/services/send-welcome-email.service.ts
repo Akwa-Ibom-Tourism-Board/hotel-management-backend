@@ -6,14 +6,17 @@ import { HospitalityEstablishment } from "../../../../establishments/Hospitality
 import { User, Roles } from "../../../../auth/User";
 import { hashData, generateTemporaryPassword, serializeUser } from "../../../../auth/auth.helpers";
 import { welcomeWithTemporaryPasswordTemplate } from "../../../../auth/emailTemplates/welcomeWithTemporaryPassword";
+import { notifyOwnerToFillSections } from "../../../../establishments/helpers/notify-owner.helpers";
 
 /**
  * Provisions portal access for an establishment's owner — for establishments
  * registered without a self-service account (e.g. via admin bulk-add).
  * Looks up an existing User by the establishment's `ownerEmail`; if one
- * exists it's simply linked (no email, since they already have a working
- * login), otherwise a new account is created with a generated temporary
- * password (mustChangePassword: true) and emailed to them.
+ * exists it's simply linked and sent a "log in and fill out your Sections"
+ * prompt (they already have a working login, just not for this hotel yet),
+ * otherwise a new account is created with a generated temporary password
+ * (mustChangePassword: true) and emailed the login + fill-sections prompt
+ * together.
  */
 const sendWelcomeEmailService = errorUtilities.withServiceErrorHandling(
   async (establishmentId: string) => {
@@ -46,9 +49,10 @@ const sendWelcomeEmailService = errorUtilities.withServiceErrorHandling(
 
     if (owner) {
       await establishment.update({ ownerId: owner.get("id") as string });
+      await notifyOwnerToFillSections(owner.get("id") as string, businessName);
       return responseUtilities.handleServicesResponse(
         StatusCodes.OK,
-        `Linked to the existing account for ${ownerEmail}`,
+        `Linked to the existing account for ${ownerEmail}, and emailed them a link to fill out this establishment's sections`,
         { establishment, owner: serializeUser(owner) },
       );
     }
